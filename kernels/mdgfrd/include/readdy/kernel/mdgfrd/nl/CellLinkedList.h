@@ -220,8 +220,7 @@ protected:
 
 };
 
-class BoxIterator {ø
-
+class BoxIterator {
     using alloc = std::allocator<std::size_t>;
 
 public:
