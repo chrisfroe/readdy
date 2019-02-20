@@ -41,8 +41,8 @@
  */
 
 #include <pybind11/pybind11.h>
-#include <pybind11/stl_bind.h>
-#include <pybind11/stl.h>
+//#include <pybind11/stl_bind.h>
+//#include <pybind11/stl.h>
 #include <pybind11/functional.h>
 #include <readdy/model/SimulationParams.h>
 
@@ -52,9 +52,13 @@ using rvp = py::return_value_policy;
 using SimulationParams = readdy::model::SimulationParams;
 
 void exportSimulationParams(py::module &module) {
-    using namespace readdy;
-    using namespace py::literals;
+    //using namespace readdy;
+    //using namespace py::literals;
 
-    py::class_<SimulationParams>(module, "SimulationParams");
-    // todo
+    py::class_<SimulationParams>(module, "SimulationParams")
+            .def_readwrite("recordReactionsWithPositions", &SimulationParams::recordReactionsWithPositions)
+            .def_readwrite("recordReactionCounts", &SimulationParams::recordReactionCounts)
+            .def_readwrite("recordVirial", &SimulationParams::recordVirial)
+            .def_readwrite("neighborListCellWidth", &SimulationParams::neighborListCellWidth)
+            .def_readwrite("neighborListSkinSize", &SimulationParams::neighborListSkinSize);
 }

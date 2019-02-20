@@ -247,11 +247,11 @@ public:
      * @param timeStep the time step
      * @see runScheme()
      */
-    virtual void run(time_step_type steps, scalar timeStep) {
-        createLoop(timeStep).run(steps);
+    virtual void run(time_step_type steps, scalar timeStep, const SimulationParams &simParams) {
+        createLoop(timeStep, simParams).run(steps);
     }
 
-    api::SimulationLoop createLoop(scalar timeStep) {
+    api::SimulationLoop createLoop(scalar timeStep, const SimulationParams &simParams) {
         return api::SimulationLoop(_kernel.get(), timeStep);
     }
 
