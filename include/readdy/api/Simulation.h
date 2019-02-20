@@ -50,7 +50,8 @@
 #include <readdy/model/Kernel.h>
 #include <readdy/api/SimulationLoop.h>
 #include <readdy/model/topologies/reactions/StructuralTopologyReaction.h>
-#include "ObservableHandle.h"
+#include <readdy/model/SimulationParams.h>
+#include <readdy/api/ObservableHandle.h>
 
 NAMESPACE_BEGIN(readdy)
 /**
@@ -284,6 +285,14 @@ public:
 
     const model::StateModel &stateModel() const {
         return _kernel->stateModel();
+    }
+
+    model::SimulationParams &simulationParams() {
+        return _kernel->simulationParams();
+    }
+
+    const model::SimulationParams &simulationParams() const {
+        return _kernel->simulationParams();
     }
 
 private:
