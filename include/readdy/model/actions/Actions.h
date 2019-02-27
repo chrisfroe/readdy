@@ -115,15 +115,15 @@ protected:
     bool recordVirial;
 };
 
-class UpdateNeighborList : public Action {
+class NeighborListAction : public Action {
 public:
     enum Operation {
         init, update, clear
     };
 
-    explicit UpdateNeighborList(Operation operation, scalar interactionDistance);
+    explicit NeighborListAction(Operation operation, scalar interactionDistance);
 
-    ~UpdateNeighborList() override = default;
+    ~NeighborListAction() override = default;
 
     scalar &interactionDistance() { return _interactionDistance; }
 
@@ -200,6 +200,13 @@ public:
 
 NAMESPACE_END(top)
 
+/**
+ * The Compartments feature defines compartments via characteristic functions that map from Vec3 to bool.
+ * For every compartment one can then define conversions that should take place as soon as a particle
+ * enters the compartment. Note that the user is responsible for keeping the compartments disjoint.
+ *
+ * The EvaluateCompartments action performs these conversions.
+ */
 class EvaluateCompartments : public Action {
 public:
     explicit EvaluateCompartments() : Action() {}
@@ -228,7 +235,7 @@ const std::string getActionName(typename std::enable_if<std::is_base_of<Calculat
 }
 
 template<typename T>
-const std::string getActionName(typename std::enable_if<std::is_base_of<UpdateNeighborList, T>::value>::type * = 0) {
+const std::string getActionName(typename std::enable_if<std::is_base_of<NeighborListAction, T>::value>::type * = 0) {
     return "Update neighbor list";
 }
 

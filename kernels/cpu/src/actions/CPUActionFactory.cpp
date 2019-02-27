@@ -76,8 +76,8 @@ std::unique_ptr<readdy::model::actions::CalculateForces> CPUActionFactory::calcu
     return {std::make_unique<CPUCalculateForces>(kernel, recordVirial)};
 }
 
-std::unique_ptr<model::actions::UpdateNeighborList>
-CPUActionFactory::updateNeighborList(model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const {
+std::unique_ptr<model::actions::NeighborListAction>
+CPUActionFactory::neighborListAction(model::actions::NeighborListAction::Operation operation, scalar interactionDistance) const {
     return {std::make_unique<CPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 

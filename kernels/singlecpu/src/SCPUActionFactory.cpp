@@ -60,7 +60,7 @@ std::vector<std::string> SCPUActionFactory::getAvailableActions() const {
     return {
             rma::getActionName<rma::AddParticles>(), rma::getActionName<rma::EulerBDIntegrator>(),
             rma::getActionName<rma::CalculateForces>(),
-            rma::getActionName<rma::UpdateNeighborList>(),
+            rma::getActionName<rma::NeighborListAction>(),
             rma::getActionName<rma::reactions::UncontrolledApproximation>(),
             rma::getActionName<rma::reactions::Gillespie>(),
             rma::getActionName<rma::top::EvaluateTopologyReactions>()
@@ -80,8 +80,8 @@ std::unique_ptr<readdy::model::actions::CalculateForces> SCPUActionFactory::calc
     return {std::make_unique<SCPUCalculateForces>(kernel, recordVirial)};
 }
 
-std::unique_ptr<readdy::model::actions::UpdateNeighborList>
-SCPUActionFactory::updateNeighborList(readdy::model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const {
+std::unique_ptr<readdy::model::actions::NeighborListAction>
+SCPUActionFactory::neighborListAction(readdy::model::actions::NeighborListAction::Operation operation, scalar interactionDistance) const {
     return {std::make_unique<SCPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 

@@ -63,8 +63,8 @@ public:
 
     std::unique_ptr<readdy::model::actions::CalculateForces> calculateForces(bool recordVirial) const override;
 
-    std::unique_ptr<model::actions::UpdateNeighborList>
-    updateNeighborList(model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const override;
+    std::unique_ptr<model::actions::NeighborListAction>
+    neighborListAction(model::actions::NeighborListAction::Operation operation, scalar interactionDistance) const override;
 
     std::unique_ptr<model::actions::EvaluateCompartments> evaluateCompartments() const override;
 

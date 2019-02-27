@@ -57,9 +57,9 @@ TEST_CASE("Test single cpu decay reactions", "[scpu]") {
     readdy::scalar timeStep = 1.0;
     auto &&integrator = kernel->actions().eulerBDIntegrator(timeStep);
     auto &&forces = kernel->actions().calculateForces(false);
-    using update_nl = readdy::model::actions::UpdateNeighborList;
-    auto &&initNeighborList = kernel->actions().updateNeighborList(update_nl::Operation::init, 0);
-    auto &&neighborList = kernel->actions().updateNeighborList(update_nl::Operation::update, 0);
+    using update_nl = readdy::model::actions::NeighborListAction;
+    auto &&initNeighborList = kernel->actions().initNeighborList(0);
+    auto &&neighborList = kernel->actions().updateNeighborList();
     auto &&reactions = kernel->actions().uncontrolledApproximation(timeStep, false, false);
 
     auto pp_obs = kernel->observe().positions(1);

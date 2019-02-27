@@ -338,9 +338,9 @@ TEMPLATE_TEST_CASE("Test detailed balance action.", "[detailed-balance]", Single
 void perform(readdy::model::Kernel *kernel, size_t nSteps, readdy::scalar timeStep, bool withIntegrator = false) {
     auto &&integrator = kernel->actions().eulerBDIntegrator(timeStep);
     auto &&forces = kernel->actions().calculateForces(false);
-    using update_nl = readdy::model::actions::UpdateNeighborList;
-    auto &&initNeighborList = kernel->actions().updateNeighborList(0, update_nl::Operation::init);
-    auto &&neighborList = kernel->actions().updateNeighborList(0, update_nl::Operation::update);
+    using update_nl = readdy::model::actions::NeighborListAction;
+    auto &&initNeighborList = kernel->actions().initNeighborList(kernel->context().calculateMaxCutoff());
+    auto &&neighborList = kernel->actions().updateNeighborList();
     auto &&reactions = kernel->actions().detailedBalance(timeStep, false, false);
 
     initNeighborList->perform();

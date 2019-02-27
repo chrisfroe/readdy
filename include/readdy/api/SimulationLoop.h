@@ -79,7 +79,7 @@ NAMESPACE_BEGIN(api)
  * superclass for all simulation schemes
  */
 class SimulationLoop {
-    using NeighborListOps = model::actions::UpdateNeighborList::Operation;
+    using NeighborListOps = model::actions::NeighborListAction::Operation;
 public:
     /**
      * the type of function that is responsible for deciding whether the simulation should continue
@@ -312,10 +312,10 @@ protected:
     std::shared_ptr<model::actions::TimeStepDependentAction> _integrator{nullptr};
     std::shared_ptr<model::actions::Action> _forces{nullptr};
     std::shared_ptr<model::actions::TimeStepDependentAction> _reactions{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _initNeighborList{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _neighborList{nullptr};
+    std::shared_ptr<model::actions::NeighborListAction> _initNeighborList{nullptr};
+    std::shared_ptr<model::actions::NeighborListAction> _neighborList{nullptr};
     std::shared_ptr<model::actions::top::EvaluateTopologyReactions> _topologyReactions{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _clearNeighborList{nullptr};
+    std::shared_ptr<model::actions::NeighborListAction> _clearNeighborList{nullptr};
     std::shared_ptr<h5rd::Group> configGroup = nullptr;
 
     bool _evaluateObservables = true;

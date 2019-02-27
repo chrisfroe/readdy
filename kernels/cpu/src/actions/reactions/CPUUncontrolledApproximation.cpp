@@ -140,10 +140,10 @@ void CPUUncontrolledApproximation::perform() {
     const auto &box = ctx.boxSize().data();
     const auto &pbc = ctx.periodicBoundaryConditions().data();
 
-    if (ctx.recordReactionsWithPositions()) {
+    if (recordReactionsWithPositions) {
         kernel->getCPUKernelStateModel().reactionRecords().clear();
     }
-    if (ctx.recordReactionCounts()) {
+    if (recordReactionCounts) {
         stateModel.resetReactionCounts();
     }
 
@@ -209,7 +209,7 @@ void CPUUncontrolledApproximation::perform() {
                 auto entry1 = event.idx1;
                 if (event.nEducts == 1) {
                     auto reaction = ctx.reactions().order1ByType(event.t1)[event.reactionIndex];
-                    if (ctx.recordReactionsWithPositions()) {
+                    if (recordReactionsWithPositions) {
                         record_t record;
                         record.id = reaction->id();
                         performReaction(&data, ctx, entry1, entry1, newParticles, decayedEntries, reaction, &record);
@@ -218,7 +218,7 @@ void CPUUncontrolledApproximation::perform() {
                     } else {
                         performReaction(&data, ctx, entry1, entry1, newParticles, decayedEntries, reaction, nullptr);
                     }
-                    if (ctx.recordReactionCounts()) {
+                    if (recordReactionCounts) {
                         auto &counts = stateModel.reactionCounts();
                         counts.at(reaction->id())++;
                     }
@@ -229,7 +229,7 @@ void CPUUncontrolledApproximation::perform() {
                     }
                 } else {
                     auto reaction = ctx.reactions().order2ByType(event.t1, event.t2)[event.reactionIndex];
-                    if (ctx.recordReactionsWithPositions()) {
+                    if (recordReactionsWithPositions) {
                         record_t record;
                         record.id = reaction->id();
                         performReaction(&data, ctx, entry1, event.idx2, newParticles, decayedEntries, reaction, &record);
@@ -238,7 +238,7 @@ void CPUUncontrolledApproximation::perform() {
                     } else {
                         performReaction(&data, ctx, entry1, event.idx2, newParticles, decayedEntries, reaction, nullptr);
                     }
-                    if (ctx.recordReactionCounts()) {
+                    if (recordReactionCounts) {
                         auto &counts = stateModel.reactionCounts();
                         counts.at(reaction->id())++;
                     }

@@ -52,7 +52,7 @@ namespace model {
 namespace actions {
 
 
-UpdateNeighborList::UpdateNeighborList(Operation operation, scalar interactionDistance)
+NeighborListAction::NeighborListAction(Operation operation, scalar interactionDistance)
         : operation(operation), _interactionDistance(interactionDistance) {
 }
 

@@ -34,13 +34,10 @@
 
 
 /**
- * << detailed description >>
- *
  * @file TestTopologyReactionsExternal.cpp
- * @brief << brief description >>
  * @author clonker
  * @date 16.08.17
- * @copyright GPL-3
+ * @copyright BSD-3
  */
 
 #include <catch2/catch.hpp>
@@ -56,6 +53,8 @@ using namespace readdytesting::kernel;
 
 TEMPLATE_TEST_CASE("Test topology reactions external", "[topologies]", SingleCPU, CPU) {
     Simulation simulation {create<TestType>()};
+
+    model::SimulationParams simParams;
 
     auto &ctx = simulation.context();
 
@@ -95,7 +94,7 @@ TEMPLATE_TEST_CASE("Test topology reactions external", "[topologies]", SingleCPU
             REQUIRE(nNormalFlavor == 1);
         }
 
-        auto loop = simulation.createLoop(1.);
+        auto loop = simulation.createLoop(1., simParams);
         loop.useReactionScheduler("UncontrolledApproximation");
         loop.runInitializeNeighborList();
         loop.runUpdateNeighborList();
@@ -129,7 +128,7 @@ TEMPLATE_TEST_CASE("Test topology reactions external", "[topologies]", SingleCPU
     }
 
     SECTION("Get topology for particle decay") {
-// check that the particles that are contained in (active) topologies point to their respective topologies, also
+        // check that the particles that are contained in (active) topologies point to their respective topologies, also
         // and especially after topology split reactions
         using namespace readdy;
         simulation.context().periodicBoundaryConditions() = {{true, true, true}};

@@ -51,8 +51,8 @@ namespace readdy {
 namespace kernel {
 namespace cpu {
 namespace actions {
-class CPUUpdateNeighborList : public readdy::model::actions::UpdateNeighborList {
-    using super = readdy::model::actions::UpdateNeighborList;
+class CPUUpdateNeighborList : public readdy::model::actions::NeighborListAction {
+    using super = readdy::model::actions::NeighborListAction;
 public:
 
     CPUUpdateNeighborList(CPUKernel *kernel, super::Operation op, scalar interactionDistance)
