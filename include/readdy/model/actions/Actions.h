@@ -101,12 +101,18 @@ public:
     ~MdgfrdIntegrator() override = default;
 };
 
-
+/**
+ * Calculates all forces and energies resulting from potentials (external, pair-potentials, bonded).
+ * Optionally calculate the virial which is required if the pressure in the system shall be measured.
+ */
 class CalculateForces : public Action {
 public:
-    CalculateForces();
+    CalculateForces(bool recordVirial);
 
     ~CalculateForces() override = default;
+
+protected:
+    bool recordVirial;
 };
 
 class UpdateNeighborList : public Action {
@@ -115,7 +121,7 @@ public:
         init, update, clear
     };
 
-    explicit UpdateNeighborList(scalar interactionDistance, Operation operation = Operation::init);
+    explicit UpdateNeighborList(Operation operation, scalar interactionDistance);
 
     ~UpdateNeighborList() override = default;
 

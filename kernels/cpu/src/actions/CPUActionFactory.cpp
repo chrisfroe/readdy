@@ -77,8 +77,8 @@ std::unique_ptr<readdy::model::actions::CalculateForces> CPUActionFactory::calcu
 }
 
 std::unique_ptr<model::actions::UpdateNeighborList>
-CPUActionFactory::updateNeighborList(scalar interactionDistance, model::actions::UpdateNeighborList::Operation operation) const {
-    return {std::make_unique<CPUUpdateNeighborList>(kernel, interactionDistance, operation)};
+CPUActionFactory::updateNeighborList(model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const {
+    return {std::make_unique<CPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 
 std::unique_ptr<model::actions::EvaluateCompartments> CPUActionFactory::evaluateCompartments() const {
@@ -86,13 +86,13 @@ std::unique_ptr<model::actions::EvaluateCompartments> CPUActionFactory::evaluate
 }
 
 std::unique_ptr<model::actions::reactions::UncontrolledApproximation>
-CPUActionFactory::uncontrolledApproximation(scalar timeStep) const {
-    return {std::make_unique<reactions::CPUUncontrolledApproximation>(kernel, timeStep)};
+CPUActionFactory::uncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
+    return {std::make_unique<reactions::CPUUncontrolledApproximation>(kernel, timeStep, recordReactionCounts, recordReactionsWithPositions)};
 }
 
 std::unique_ptr<model::actions::reactions::Gillespie>
 CPUActionFactory::gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
-    return {std::make_unique<reactions::CPUGillespie>(kernel, timeStep)};
+    return {std::make_unique<reactions::CPUGillespie>(kernel, timeStep, recordReactionCounts, recordReactionsWithPositions)};
 }
 
 std::unique_ptr<model::actions::top::EvaluateTopologyReactions>

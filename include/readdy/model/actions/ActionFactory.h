@@ -83,7 +83,7 @@ public:
             return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep, false, false));
         }
         if (name == getActionName<reactions::UncontrolledApproximation>()) {
-            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep, false, false));
         }
         if (name == getActionName<reactions::DetailedBalance>()) {
             return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep, false, false));
@@ -104,39 +104,30 @@ public:
     virtual std::unique_ptr<readdy::model::actions::CalculateForces> calculateForces(bool recordVirial) const = 0;
 
     virtual std::unique_ptr<UpdateNeighborList>
-    updateNeighborList(scalar interactionDistance, UpdateNeighborList::Operation operation) const = 0;
+    updateNeighborList(UpdateNeighborList::Operation operation, scalar interactionDistance) const = 0;
 
     std::unique_ptr<UpdateNeighborList> updateNeighborList() const {
-        return updateNeighborList(0, UpdateNeighborList::Operation::update);
+        return updateNeighborList(UpdateNeighborList::Operation::update, 0);
     };
 
     std::unique_ptr<UpdateNeighborList> initNeighborList(scalar interactionDistance) const {
-        return updateNeighborList(interactionDistance, UpdateNeighborList::Operation::init);
+        return updateNeighborList(UpdateNeighborList::Operation::init, interactionDistance);
     };
 
     std::unique_ptr<UpdateNeighborList> clearNeighborList() const {
-        return updateNeighborList(0, UpdateNeighborList::Operation::clear);
+        return updateNeighborList(UpdateNeighborList::Operation::clear, 0);
     };
 
     virtual std::unique_ptr<EvaluateCompartments> evaluateCompartments() const = 0;
 
-    virtual std::unique_ptr<reactions::UncontrolledApproximation> uncontrolledApproximation(scalar timeStep) const = 0;
+    virtual std::unique_ptr<reactions::UncontrolledApproximation>
+    uncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const = 0;
 
     virtual std::unique_ptr<reactions::Gillespie>
     gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const = 0;
 
-    std::unique_ptr<reactions::Gillespie>
-    gillespie(scalar timeStep) const {
-        return gillespie(timeStep, false, false);
-    }
-
     virtual std::unique_ptr<reactions::DetailedBalance>
     detailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const = 0;
-
-    std::unique_ptr<reactions::DetailedBalance>
-    detailedBalance(scalar timeStep) const {
-        return detailedBalance(timeStep, false, false);
-    }
 
     virtual std::unique_ptr<top::EvaluateTopologyReactions> evaluateTopologyReactions(scalar timeStep) const = 0;
 

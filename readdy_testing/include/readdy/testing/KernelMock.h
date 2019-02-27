@@ -75,7 +75,7 @@ public:
     }
 
     std::unique_ptr<model::actions::reactions::UncontrolledApproximation>
-    uncontrolledApproximation(scalar timeStep) const override {
+    uncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const override {
         return nullptr;
     }
 

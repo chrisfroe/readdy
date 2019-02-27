@@ -48,7 +48,9 @@ namespace cpu {
 namespace actions {
 namespace reactions {
 
-CPUGillespie::CPUGillespie(CPUKernel *const kernel, scalar timeStep) : super(timeStep), kernel(kernel) {}
+CPUGillespie::CPUGillespie(CPUKernel *kernel, readdy::scalar timeStep, bool recordReactionCounts,
+                           bool recordReactionsWithPositions) : super(timeStep, recordReactionCounts,
+                                                                      recordReactionsWithPositions), kernel(kernel) {}
 
 void CPUGillespie::perform() {
     const auto &ctx = kernel->context();

@@ -297,7 +297,7 @@ TEST_CASE("Test cpu kernel reaction handling", "[cpu]") {
             REQUIRE(2 == kernel->getNThreads());
             auto &&neighborList = kernel->actions().updateNeighborList();
             std::unique_ptr<readdy::kernel::cpu::actions::reactions::CPUGillespie> reactions = readdy::util::static_unique_ptr_cast_no_del<readdy::kernel::cpu::actions::reactions::CPUGillespie>(
-                    kernel->actions().gillespie(1)
+                    kernel->actions().gillespie(1, false, false)
             );
             neighborList->perform();
             reactions->perform();

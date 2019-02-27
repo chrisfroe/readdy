@@ -81,8 +81,8 @@ std::unique_ptr<readdy::model::actions::CalculateForces> SCPUActionFactory::calc
 }
 
 std::unique_ptr<readdy::model::actions::UpdateNeighborList>
-SCPUActionFactory::updateNeighborList(scalar interactionDistance, readdy::model::actions::UpdateNeighborList::Operation operation) const {
-    return {std::make_unique<SCPUUpdateNeighborList>(kernel, interactionDistance, operation)};
+SCPUActionFactory::updateNeighborList(readdy::model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const {
+    return {std::make_unique<SCPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 
 std::unique_ptr<readdy::model::actions::EvaluateCompartments> SCPUActionFactory::evaluateCompartments() const {
@@ -90,7 +90,7 @@ std::unique_ptr<readdy::model::actions::EvaluateCompartments> SCPUActionFactory:
 }
 
 std::unique_ptr<readdy::model::actions::reactions::UncontrolledApproximation>
-SCPUActionFactory::uncontrolledApproximation(scalar timeStep) const {
+SCPUActionFactory::uncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
     return {std::make_unique<reactions::SCPUUncontrolledApproximation>(kernel, timeStep)};
 }
 

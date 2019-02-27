@@ -92,13 +92,16 @@ public:
     /**
      * Creates a new simulation scheme.
      * @param kernel the kernel
+     * @param timeStep the time step width
+     * @param simParams config for the actions, e.g. the distance for neighborlist, or if virial shall be calculated
      */
     explicit SimulationLoop(model::Kernel *const kernel, scalar timeStep, const model::SimulationParams &simParams)
             : _kernel(kernel), _timeStep(timeStep), _simParams(simParams),
               _integrator(kernel->actions().eulerBDIntegrator(timeStep).release()),
               _reactions(kernel->actions().gillespie(timeStep, false, false).release()),
               _forces(kernel->actions().calculateForces(false).release()),
-              _initNeighborList(kernel->actions().initNeighborList(simParams.neighborListInteractionDistance + simParams.neighborListSkinSize).release()),
+              _initNeighborList(kernel->actions().initNeighborList(
+                      simParams.neighborListInteractionDistance + simParams.neighborListSkinSize).release()),
               _neighborList(kernel->actions().updateNeighborList().release()),
               _clearNeighborList(kernel->actions().clearNeighborList().release()),
               _topologyReactions(kernel->actions().evaluateTopologyReactions(timeStep).release()) {}
@@ -234,10 +237,6 @@ public:
                     throw std::logic_error("Neighbor list required but set to null!");
                 }
                 _initNeighborList->interactionDistance() =
-                        _simParams.neighborListInteractionDistance + _simParams.neighborListSkinSize;
-                _neighborList->interactionDistance() =
-                        _simParams.neighborListInteractionDistance + _simParams.neighborListSkinSize;
-                _clearNeighborList->interactionDistance() =
                         _simParams.neighborListInteractionDistance + _simParams.neighborListSkinSize;
             }
             runInitialize();

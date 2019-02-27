@@ -307,7 +307,7 @@ TEST_CASE("Test cpu neighbor list", "[cpu]") {
         kernel->stateModel().initializeNeighborList(0);
 
         auto integrator = kernel->actions().eulerBDIntegrator(.1);
-        auto reactionHandler = kernel->actions().uncontrolledApproximation(.1);
+        auto reactionHandler = kernel->actions().uncontrolledApproximation(.1, false, false);
 
         const auto &data = *kernel->getCPUKernelStateModel().getParticleData();
 

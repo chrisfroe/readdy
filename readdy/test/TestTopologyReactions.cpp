@@ -649,7 +649,7 @@ TEMPLATE_TEST_CASE("Test topology reactions chaindecay integration test", "[topo
         auto integrator = kernel->actions().createIntegrator("EulerBDIntegrator", 1e-2);
         auto forces = kernel->actions().calculateForces(false);
         auto topReactions = kernel->actions().evaluateTopologyReactions(1e-2);
-        auto reactions = kernel->actions().uncontrolledApproximation(1e-2);
+        auto reactions = kernel->actions().uncontrolledApproximation(1e-2, false, false);
 
         std::size_t time = 0;
         std::size_t n_time_steps = 10000;

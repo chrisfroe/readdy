@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
- * @file UncontrolledApproximation.cpp
- * @brief << brief description >>
+ * @file CPUUncontrolledApproximation.cpp
+ * @brief CPU kernel implementation of reaction handler UncontrolledApproximation
  * @author clonker
  * @date 20.10.16
  */
@@ -66,8 +64,9 @@ using entry_type = data_t::Entries::value_type;
 using event_future_t = std::future<std::vector<event_t>>;
 using event_promise_t = std::promise<std::vector<event_t>>;
 
-CPUUncontrolledApproximation::CPUUncontrolledApproximation(CPUKernel *const kernel, scalar timeStep)
-        : super(timeStep), kernel(kernel) {
+CPUUncontrolledApproximation::CPUUncontrolledApproximation(CPUKernel *kernel, readdy::scalar timeStep, bool recordReactionCounts,
+                                                           bool recordReactionsWithPositions)
+        : super(timeStep, recordReactionCounts, recordReactionsWithPositions), kernel(kernel) {
 
 }
 

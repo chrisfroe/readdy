@@ -190,9 +190,9 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             auto conn = kernel->connectObservable(fObs.get());
 
             // we need to update the neighbor list as this is a pair potential
-            auto neighborList = kernel->actions().updateNeighborList();
+            auto neighborList = kernel->actions().initNeighborList();
             neighborList->perform();
-            auto updateNeighborList = kernel->actions().updateNeighborList(readdy::model::actions::UpdateNeighborList::Operation::update);
+            auto updateNeighborList = kernel->actions().updateNeighborList(readdy::model::actions::UpdateNeighborList::Operation::update, 0);
             updateNeighborList->perform();
             // calc forces
             auto calculateForces = kernel->actions().calculateForces(false);

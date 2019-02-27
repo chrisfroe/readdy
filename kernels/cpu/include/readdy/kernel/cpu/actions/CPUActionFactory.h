@@ -64,12 +64,12 @@ public:
     std::unique_ptr<readdy::model::actions::CalculateForces> calculateForces(bool recordVirial) const override;
 
     std::unique_ptr<model::actions::UpdateNeighborList>
-    updateNeighborList(scalar interactionDistance, model::actions::UpdateNeighborList::Operation operation) const override;
+    updateNeighborList(model::actions::UpdateNeighborList::Operation operation, scalar interactionDistance) const override;
 
     std::unique_ptr<model::actions::EvaluateCompartments> evaluateCompartments() const override;
 
     std::unique_ptr<model::actions::reactions::UncontrolledApproximation>
-    uncontrolledApproximation(scalar timeStep) const override;
+    uncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const override;
 
     std::unique_ptr<model::actions::reactions::Gillespie>
     gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const override;

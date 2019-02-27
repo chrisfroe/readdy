@@ -53,7 +53,7 @@ namespace actions {
 class SCPUUpdateNeighborList : public readdy::model::actions::UpdateNeighborList {
 
 public:
-    explicit SCPUUpdateNeighborList(SCPUKernel *kernel, scalar interactionDistance, Operation op = Operation::init);
+    explicit SCPUUpdateNeighborList(SCPUKernel *kernel, Operation op, scalar interactionDistance);
 
     void perform() override;
 

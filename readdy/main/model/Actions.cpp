@@ -52,7 +52,7 @@ namespace model {
 namespace actions {
 
 
-UpdateNeighborList::UpdateNeighborList(scalar interactionDistance, Operation operation)
+UpdateNeighborList::UpdateNeighborList(Operation operation, scalar interactionDistance)
         : operation(operation), _interactionDistance(interactionDistance) {
 }
 
@@ -561,7 +561,7 @@ void AddParticles::perform() {
     }
 }
 
-CalculateForces::CalculateForces() : Action() {}
+CalculateForces::CalculateForces(bool recordVirial) : Action(), recordVirial(recordVirial) {}
 
 top::EvaluateTopologyReactions::EvaluateTopologyReactions(scalar timeStep) : TimeStepDependentAction(timeStep) {}
 
