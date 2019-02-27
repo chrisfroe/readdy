@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
- * @file Gillespie.cpp
- * @brief << brief description >>
+ * @file CPUGillespie.cpp
+ * @brief CPU kernel implementation of Gillespie-order reaction handler
  * @author clonker
  * @date 20.10.16
  */
@@ -61,16 +59,16 @@ void CPUGillespie::perform() {
     auto data = stateModel.getParticleData();
     const auto nl = stateModel.getNeighborList();
 
-    if(ctx.recordReactionCounts()) {
+    if(recordReactionCounts) {
         stateModel.resetReactionCounts();
     }
 
     scalar alpha = 0.0;
     std::vector<event_t> events;
     gatherEvents(kernel, readdy::util::range<event_t::index_type>(0, data->size()), nl, data, alpha, events);
-    if(ctx.recordReactionsWithPositions()) {
+    if(recordReactionsWithPositions) {
         stateModel.reactionRecords().clear();
-        if(ctx.recordReactionCounts()) {
+        if(recordReactionCounts) {
             auto &counts = stateModel.reactionCounts();
             auto particlesUpdate = handleEventsGillespie(kernel, timeStep(), false, false, std::move(events),
                                                          &stateModel.reactionRecords(), &counts);
@@ -81,7 +79,7 @@ void CPUGillespie::perform() {
             data->update(std::move(particlesUpdate));
         }
     } else {
-        if(ctx.recordReactionCounts()) {
+        if(recordReactionCounts) {
             auto &counts = stateModel.reactionCounts();
             auto particlesUpdate = handleEventsGillespie(kernel, timeStep(), false, false, std::move(events),
                                                          nullptr, &counts);

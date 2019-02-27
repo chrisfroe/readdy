@@ -94,7 +94,8 @@ SCPUActionFactory::uncontrolledApproximation(scalar timeStep) const {
     return {std::make_unique<reactions::SCPUUncontrolledApproximation>(kernel, timeStep)};
 }
 
-std::unique_ptr<readdy::model::actions::reactions::Gillespie> SCPUActionFactory::gillespie(scalar timeStep) const {
+std::unique_ptr<readdy::model::actions::reactions::Gillespie>
+SCPUActionFactory::gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
     return {std::make_unique<reactions::SCPUGillespie>(kernel, timeStep)};
 }
 
@@ -104,7 +105,7 @@ SCPUActionFactory::evaluateTopologyReactions(scalar timeStep) const {
 }
 
 std::unique_ptr<readdy::model::actions::reactions::DetailedBalance>
-SCPUActionFactory::detailedBalance(scalar timeStep) const {
+SCPUActionFactory::detailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
     return {std::make_unique<reactions::SCPUDetailedBalance>(kernel, timeStep)};
 }
 

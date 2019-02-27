@@ -96,7 +96,7 @@ public:
     explicit SimulationLoop(model::Kernel *const kernel, scalar timeStep, const model::SimulationParams &simParams)
             : _kernel(kernel), _timeStep(timeStep), _simParams(simParams),
               _integrator(kernel->actions().eulerBDIntegrator(timeStep).release()),
-              _reactions(kernel->actions().gillespie(timeStep).release()),
+              _reactions(kernel->actions().gillespie(timeStep, false, false).release()),
               _forces(kernel->actions().calculateForces(false).release()),
               _initNeighborList(kernel->actions().initNeighborList(simParams.neighborListInteractionDistance + simParams.neighborListSkinSize).release()),
               _neighborList(kernel->actions().updateNeighborList().release()),

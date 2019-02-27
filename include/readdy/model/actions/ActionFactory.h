@@ -80,13 +80,13 @@ public:
 
     std::unique_ptr<TimeStepDependentAction> createReactionScheduler(const std::string &name, scalar timeStep) {
         if (name == getActionName<reactions::Gillespie>()) {
-            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep, false, false));
         }
         if (name == getActionName<reactions::UncontrolledApproximation>()) {
             return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep));
         }
         if (name == getActionName<reactions::DetailedBalance>()) {
-            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep, false, false));
         }
         throw std::invalid_argument("Requested reaction scheduler " + name + " is not available.");
     }
@@ -122,9 +122,21 @@ public:
 
     virtual std::unique_ptr<reactions::UncontrolledApproximation> uncontrolledApproximation(scalar timeStep) const = 0;
 
-    virtual std::unique_ptr<reactions::Gillespie> gillespie(scalar timeStep) const = 0;
+    virtual std::unique_ptr<reactions::Gillespie>
+    gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const = 0;
 
-    virtual std::unique_ptr<reactions::DetailedBalance> detailedBalance(scalar timeStep) const = 0;
+    std::unique_ptr<reactions::Gillespie>
+    gillespie(scalar timeStep) const {
+        return gillespie(timeStep, false, false);
+    }
+
+    virtual std::unique_ptr<reactions::DetailedBalance>
+    detailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const = 0;
+
+    std::unique_ptr<reactions::DetailedBalance>
+    detailedBalance(scalar timeStep) const {
+        return detailedBalance(timeStep, false, false);
+    }
 
     virtual std::unique_ptr<top::EvaluateTopologyReactions> evaluateTopologyReactions(scalar timeStep) const = 0;
 

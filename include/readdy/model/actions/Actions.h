@@ -135,7 +135,7 @@ NAMESPACE_BEGIN(reactions)
 class UncontrolledApproximation : public TimeStepDependentAction {
 
 public:
-    explicit UncontrolledApproximation(scalar timeStep);
+    explicit UncontrolledApproximation(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions);
 
     ~UncontrolledApproximation() override = default;
 
@@ -147,7 +147,7 @@ protected:
 
 class Gillespie : public TimeStepDependentAction {
 public:
-    explicit Gillespie(scalar timeStep);
+    explicit Gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions);
 
     ~Gillespie() override = default;
 
@@ -159,7 +159,7 @@ protected:
 
 class DetailedBalance : public TimeStepDependentAction {
 public:
-    explicit DetailedBalance(scalar timeStep);
+    explicit DetailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions);
 
     ~DetailedBalance() override = default;
     const std::vector<std::shared_ptr<const ReversibleReactionConfig>> &reversibleReactions() const {

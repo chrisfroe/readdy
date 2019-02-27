@@ -79,7 +79,8 @@ public:
         return nullptr;
     }
 
-    std::unique_ptr<model::actions::reactions::Gillespie> gillespie(scalar timeStep) const override {
+    std::unique_ptr<model::actions::reactions::Gillespie>
+    gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const override {
         return nullptr;
     }
 

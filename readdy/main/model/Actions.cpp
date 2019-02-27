@@ -60,9 +60,14 @@ EulerBDIntegrator::EulerBDIntegrator(scalar timeStep) : TimeStepDependentAction(
 
 MdgfrdIntegrator::MdgfrdIntegrator(scalar timeStep) : TimeStepDependentAction(timeStep) {}
 
-reactions::UncontrolledApproximation::UncontrolledApproximation(scalar timeStep) : TimeStepDependentAction(timeStep) {}
+reactions::UncontrolledApproximation::UncontrolledApproximation(scalar timeStep, bool recordReactionCounts,
+                                                                bool recordReactionsWithPositions)
+        : TimeStepDependentAction(timeStep), recordReactionCounts(recordReactionCounts),
+          recordReactionsWithPositions(recordReactionsWithPositions) {}
 
-reactions::Gillespie::Gillespie(scalar timeStep) : TimeStepDependentAction(timeStep) {}
+reactions::Gillespie::Gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions)
+        : TimeStepDependentAction(timeStep), recordReactionCounts(recordReactionCounts),
+          recordReactionsWithPositions(recordReactionsWithPositions) {}
 
 reactions::ReversibleReactionConfig::ReversibleReactionConfig(ReactionId forwardId, ReactionId backwardId,
                                                               const Context &ctx)
@@ -428,7 +433,9 @@ std::string reactions::ReversibleReactionConfig::describe() const {
     return description.str();
 }
 
-reactions::DetailedBalance::DetailedBalance(scalar timeStep) : TimeStepDependentAction(timeStep) {}
+reactions::DetailedBalance::DetailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions)
+        : TimeStepDependentAction(timeStep), recordReactionCounts(recordReactionCounts),
+          recordReactionsWithPositions(recordReactionsWithPositions) {}
 
 void reactions::DetailedBalance::searchReversibleReactions(const Context &ctx) {
     _reversibleReactionsMap.clear();

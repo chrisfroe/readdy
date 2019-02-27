@@ -68,6 +68,10 @@ std::unique_ptr<model::actions::EulerBDIntegrator> CPUActionFactory::eulerBDInte
     return {std::make_unique<CPUEulerBDIntegrator>(kernel, timeStep)};
 }
 
+std::unique_ptr<readdy::model::actions::MdgfrdIntegrator> CPUActionFactory::mdgfrdIntegrator(scalar timeStep) const {
+    throw std::invalid_argument("Mdgfrd integrator not implemented for CPU");
+}
+
 std::unique_ptr<readdy::model::actions::CalculateForces> CPUActionFactory::calculateForces(bool recordVirial) const {
     return {std::make_unique<CPUCalculateForces>(kernel, recordVirial)};
 }
@@ -86,7 +90,8 @@ CPUActionFactory::uncontrolledApproximation(scalar timeStep) const {
     return {std::make_unique<reactions::CPUUncontrolledApproximation>(kernel, timeStep)};
 }
 
-std::unique_ptr<model::actions::reactions::Gillespie> CPUActionFactory::gillespie(scalar timeStep) const {
+std::unique_ptr<model::actions::reactions::Gillespie>
+CPUActionFactory::gillespie(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
     return {std::make_unique<reactions::CPUGillespie>(kernel, timeStep)};
 }
 
@@ -95,8 +100,8 @@ CPUActionFactory::evaluateTopologyReactions(scalar timeStep) const {
     return {std::make_unique<top::CPUEvaluateTopologyReactions>(kernel, timeStep)};
 }
 
-std::unique_ptr<readdy::model::actions::reactions::DetailedBalance>
-CPUActionFactory::detailedBalance(scalar timeStep) const {
+std::unique_ptr<model::actions::reactions::DetailedBalance>
+CPUActionFactory::detailedBalance(scalar timeStep, bool recordReactionCounts, bool recordReactionsWithPositions) const {
     throw std::invalid_argument("DetailedBalance reaction handler not implemented for CPU");
 }
 }
