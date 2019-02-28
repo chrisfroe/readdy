@@ -60,7 +60,6 @@ using obs_handle_t = readdy::ObservableHandle;
 
 inline obs_handle_t registerObservable_Reactions(sim &self, unsigned int stride,
                                                  const py::object& callback = py::none()) {
-    self.context().recordReactionsWithPositions() = true;
     auto obs = self.observe().reactions(stride);
     if (callback.is_none()) {
         return self.registerObservable(std::move(obs));
@@ -98,7 +97,6 @@ inline obs_handle_t registerObservable_Topologies(sim &self, readdy::stride_type
 
 inline obs_handle_t registerObservable_ReactionCounts(sim &self, unsigned int stride,
                                                       const py::object& callback = py::none()) {
-    self.context().recordReactionCounts() = true;
     auto obs = self.observe().reactionCounts(stride);
     if (callback.is_none()) {
         return self.registerObservable(std::move(obs));

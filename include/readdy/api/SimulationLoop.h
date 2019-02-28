@@ -101,7 +101,8 @@ public:
               _reactions(kernel->actions().gillespie(timeStep, false, false).release()),
               _forces(kernel->actions().calculateForces(false).release()),
               _initNeighborList(kernel->actions().initNeighborList(
-                      simParams.neighborListInteractionDistance + simParams.neighborListSkinSize).release()),
+                      std::max(simParams.neighborListInteractionDistance, kernel->context().calculateMaxCutoff())
+                      + simParams.neighborListSkinSize).release()),
               _neighborList(kernel->actions().updateNeighborList().release()),
               _clearNeighborList(kernel->actions().clearNeighborList().release()),
               _topologyReactions(kernel->actions().evaluateTopologyReactions(timeStep).release()) {}
@@ -236,8 +237,6 @@ public:
                 if (!(_initNeighborList && _neighborList && _clearNeighborList)) {
                     throw std::logic_error("Neighbor list required but set to null!");
                 }
-                _initNeighborList->interactionDistance() =
-                        _simParams.neighborListInteractionDistance + _simParams.neighborListSkinSize;
             }
             runInitialize();
             if (requiresNeighborList) runInitializeNeighborList();
