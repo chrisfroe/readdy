@@ -80,13 +80,13 @@ public:
 
     std::unique_ptr<TimeStepDependentAction> createReactionScheduler(const std::string &name, scalar timeStep) {
         if (name == getActionName<reactions::Gillespie>()) {
-            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep, false, false));
+            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep));
         }
         if (name == getActionName<reactions::UncontrolledApproximation>()) {
-            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep, false, false));
+            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep));
         }
         if (name == getActionName<reactions::DetailedBalance>()) {
-            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep, false, false));
+            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep));
         }
         throw std::invalid_argument("Requested reaction scheduler " + name + " is not available.");
     }

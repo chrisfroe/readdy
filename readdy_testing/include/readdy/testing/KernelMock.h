@@ -34,16 +34,13 @@
 
 
 /**
- * << detailed description >>
- *
  * @file KernelMock.h
- * @brief << brief description >>
+ * @brief Header for an impostor Kernel
  * @author clonker
  * @date 13.07.16
  */
 
-#ifndef READDY_MAIN_KERNELMOCK_H
-#define READDY_MAIN_KERNELMOCK_H
+#pragma once
 
 #include <readdy/model/Kernel.h>
 
@@ -91,4 +88,3 @@ public:
 
 }
 }
-#endif //READDY_MAIN_KERNELMOCK_H

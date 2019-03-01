@@ -41,8 +41,7 @@
  * @copyright BSD-3
  */
 
-#ifndef READDY_MAIN_EXPORTOBSERVABLES_H
-#define READDY_MAIN_EXPORTOBSERVABLES_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -302,4 +301,3 @@ void exportObservables(py::module &apiModule, py::class_<type_, options...> &sim
             .def("register_observable_virial", &registerObservable_Virial, "stride"_a, "callback"_a=py::none())
             .def("register_observable_topologies", &registerObservable_Topologies, "stride"_a, "callback"_a=py::none());
 }
-#endif //READDY_MAIN_EXPORTOBSERVABLES_H

@@ -38,7 +38,7 @@
  * @brief Kernel-non-specific tests of the detailed-balance reaction handler
  * @author chrisfroe
  * @date 29.05.18
- * @copyright GPL-3
+ * @copyright BSD-3
  */
 
 #include <catch2/catch.hpp>
