@@ -532,7 +532,6 @@ TEMPLATE_TEST_CASE("Test topology reactions.", "[topologies]", SingleCPU, CPU) {
             t->graph().addEdgeBetweenParticles(0, 1);
             t->graph().addEdgeBetweenParticles(1, 2);
 
-            simParams.neighborListInteractionDistance = sim.context().calculateMaxCutoff();
             sim.createLoop(1e-3, simParams).run(1);
 
             auto topologies = sim.currentTopologies();

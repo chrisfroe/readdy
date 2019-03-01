@@ -172,6 +172,10 @@ public:
         if (_topologyReactions) _topologyReactions->perform();
     }
 
+    // todo remove this in favor of a setUserIntegrator, this way the actions can be set up in the constructor
+    // todo and not changed afterwards, configuration object for the user meanwhile is the SimulationParams object
+    // todo the only thing not configured at construction are observables -> so far those will only set flags at the actions
+    // todo which can be done after construction
     TimeStepActionPtr &integrator() { return _integrator; }
 
     const TimeStepActionPtr &integrator() const { return _integrator; }
@@ -322,7 +326,6 @@ protected:
     std::size_t _progressOutputStride = 100;
     std::function<void(time_step_type)> _progressCallback;
     scalar _timeStep;
-    model::SimulationParams _simParams;
 
     std::vector<std::function<void(time_step_type)>> _callbacks;
 };

@@ -112,7 +112,6 @@ TEMPLATE_TEST_CASE("Test reaction handlers", "[reactions]", SingleCPU, CPU) {
                     }
                 };
 
-                simParams.neighborListInteractionDistance = ctx.calculateMaxCutoff();
                 readdy::api::SimulationLoop loop(kernel.get(), 1, simParams);
                 loop.useReactionScheduler(handler);
                 loop.run(10);

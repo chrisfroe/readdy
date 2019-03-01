@@ -113,7 +113,6 @@ TEMPLATE_TEST_CASE("Test simulation schemes", "[schemes]", SingleCPU, CPU) {
         simulation.addParticle("A", 1.5, 0., 0.);
         readdy::model::SimulationParams skinnySimParams;
         skinnySimParams.neighborListSkinSize = 1.;
-        skinnySimParams.neighborListInteractionDistance = simulation.context().calculateMaxCutoff();
         auto loop = simulation.createLoop(.001, skinnySimParams);
         loop.run(10);
     }

@@ -94,7 +94,6 @@ TEMPLATE_TEST_CASE("Test topology reactions external", "[topologies]", SingleCPU
             REQUIRE(nNormalFlavor == 1);
         }
 
-        simParams.neighborListInteractionDistance = ctx.calculateMaxCutoff();
         auto loop = simulation.createLoop(1., simParams);
         loop.useReactionScheduler("UncontrolledApproximation");
         loop.runInitializeNeighborList();

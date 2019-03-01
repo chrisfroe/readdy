@@ -72,7 +72,6 @@ TEST_CASE("Sanity check of the simulation loop.", "[loop]") {
     sim.context().topologyRegistry().configureBondPotential("A", "A", {0., 10.});
 
     model::SimulationParams simParams;
-    simParams.neighborListInteractionDistance = sim.context().calculateMaxCutoff();
     auto loop = sim.createLoop(1.5, simParams);
 
     loop.addCallback([&](const auto t) {
