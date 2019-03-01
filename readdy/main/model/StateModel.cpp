@@ -34,13 +34,11 @@
 
 
 /**
- * << detailed description >>
- *
  * @file StateModel.cpp
- * @brief << brief description >>
+ * @brief Core library compilation unit for state model
  * @author clonker
  * @date 19.04.17
- * @copyright GPL-3
+ * @copyright BSD-3
  */
 
 #include <readdy/model/StateModel.h>

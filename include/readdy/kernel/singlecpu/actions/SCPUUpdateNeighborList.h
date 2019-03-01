@@ -50,11 +50,10 @@ namespace kernel {
 namespace scpu {
 namespace actions {
 
-class SCPUUpdateNeighborList : public readdy::model::actions::UpdateNeighborList {
+class SCPUUpdateNeighborList : public readdy::model::actions::NeighborListAction {
 
 public:
-    explicit SCPUUpdateNeighborList(SCPUKernel* kernel,
-                           readdy::model::actions::UpdateNeighborList::Operation op = Operation::init, scalar = -1);
+    explicit SCPUUpdateNeighborList(SCPUKernel *kernel, Operation op, scalar interactionDistance);
 
     void perform() override;
 

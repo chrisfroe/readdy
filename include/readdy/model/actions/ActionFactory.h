@@ -34,12 +34,13 @@
 
 
 /**
- * This file contains the declaration of the program factory. Internally, the factory is simply a map of
- * string -> std::function<Program*()>, which then can get called.
+ * This file contains the declaration of the action factory. Internally, the factory is simply a map of
+ * string -> std::function<Action*()>, which then can get called.
  *
- * @file ProgramFactory.h
- * @brief Declaration of the program factory.
+ * @file ActionFactory.h
+ * @brief Declaration of the action factory.
  * @author clonker
+ * @author chrisfroe
  * @date 08.04.16
  */
 
@@ -61,9 +62,9 @@ public:
     virtual std::vector<std::string> getAvailableActions() const {
         return {
                 getActionName<AddParticles>(), getActionName<EulerBDIntegrator>(), getActionName<CalculateForces>(),
-                getActionName<UpdateNeighborList>(), getActionName<reactions::UncontrolledApproximation>(),
+                getActionName<NeighborListAction>(), getActionName<reactions::UncontrolledApproximation>(),
                 getActionName<reactions::Gillespie>(), getActionName<reactions::DetailedBalance>(),
-                getActionName<top::EvaluateTopologyReactions>()
+                getActionName<top::EvaluateTopologyReactions>(), getActionName<MdgfrdIntegrator>()
         };
     }
 
@@ -79,13 +80,13 @@ public:
 
     std::unique_ptr<TimeStepDependentAction> createReactionScheduler(const std::string &name, scalar timeStep) {
         if (name == getActionName<reactions::Gillespie>()) {
-            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(gillespie(timeStep, false, false));
         }
         if (name == getActionName<reactions::UncontrolledApproximation>()) {
-            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(uncontrolledApproximation(timeStep, false, false));
         }
         if (name == getActionName<reactions::DetailedBalance>()) {
-            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep));
+            return std::unique_ptr<TimeStepDependentAction>(detailedBalance(timeStep, false, false));
         }
         throw std::invalid_argument("Requested reaction scheduler " + name + " is not available.");
     }
@@ -98,17 +99,23 @@ public:
 
     virtual std::unique_ptr<EulerBDIntegrator> eulerBDIntegrator(scalar timeStep) const = 0;
 
+    virtual std::unique_ptr<MdgfrdIntegrator> mdgfrdIntegrator(scalar timeStep) const = 0;
+
     virtual std::unique_ptr<CalculateForces> calculateForces() const = 0;
 
-    virtual std::unique_ptr<UpdateNeighborList> updateNeighborList(UpdateNeighborList::Operation operation,
-                                                                   scalar skinSize) const = 0;
+    virtual std::unique_ptr<NeighborListAction>
+    neighborListAction(NeighborListAction::Operation operation, scalar interactionDistance) const = 0;
 
-    std::unique_ptr<UpdateNeighborList> updateNeighborList(UpdateNeighborList::Operation op) const {
-        return updateNeighborList(op, 0);
+    std::unique_ptr<NeighborListAction> updateNeighborList() const {
+        return neighborListAction(NeighborListAction::Operation::update, 0);
     };
 
-    std::unique_ptr<UpdateNeighborList> updateNeighborList() const {
-        return updateNeighborList(UpdateNeighborList::Operation::init, 0);
+    std::unique_ptr<NeighborListAction> initNeighborList(scalar interactionDistance) const {
+        return neighborListAction(NeighborListAction::Operation::init, interactionDistance);
+    };
+
+    std::unique_ptr<NeighborListAction> clearNeighborList() const {
+        return neighborListAction(NeighborListAction::Operation::clear, 0);
     };
 
     virtual std::unique_ptr<EvaluateCompartments> evaluateCompartments() const = 0;

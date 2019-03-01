@@ -50,7 +50,7 @@
 #include <readdy/model/Kernel.h>
 #include <readdy/api/SimulationLoop.h>
 #include <readdy/model/topologies/reactions/StructuralTopologyReaction.h>
-#include "ObservableHandle.h"
+#include <readdy/api/ObservableHandle.h>
 
 NAMESPACE_BEGIN(readdy)
 /**

@@ -34,12 +34,10 @@
 
 
 /**
- * << detailed description >>
- *
  * @file Virial.cpp
- * @brief << brief description >>
+ * @brief Implementation of virial observable
  * @author clonker
- * @date 1/17/18
+ * @date 17.01.18
  */
 
 #include <readdy/model/observables/Virial.h>

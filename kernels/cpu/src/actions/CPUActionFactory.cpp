@@ -68,13 +68,17 @@ std::unique_ptr<model::actions::EulerBDIntegrator> CPUActionFactory::eulerBDInte
     return {std::make_unique<CPUEulerBDIntegrator>(kernel, timeStep)};
 }
 
+std::unique_ptr<readdy::model::actions::MdgfrdIntegrator> CPUActionFactory::mdgfrdIntegrator(scalar timeStep) const {
+    throw std::invalid_argument("Mdgfrd integrator not implemented for CPU");
+}
+
 std::unique_ptr<model::actions::CalculateForces> CPUActionFactory::calculateForces() const {
     return {std::make_unique<CPUCalculateForces>(kernel)};
 }
 
-std::unique_ptr<model::actions::UpdateNeighborList>
-CPUActionFactory::updateNeighborList(model::actions::UpdateNeighborList::Operation operation, scalar skinSize) const {
-    return {std::make_unique<CPUUpdateNeighborList>(kernel, operation, skinSize)};
+std::unique_ptr<model::actions::NeighborListAction>
+CPUActionFactory::neighborListAction(model::actions::NeighborListAction::Operation operation, scalar interactionDistance) const {
+    return {std::make_unique<CPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 
 std::unique_ptr<model::actions::EvaluateCompartments> CPUActionFactory::evaluateCompartments() const {

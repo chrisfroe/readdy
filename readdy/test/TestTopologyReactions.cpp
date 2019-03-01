@@ -490,7 +490,7 @@ TEMPLATE_TEST_CASE("Test topology reactions.", "[topologies]", SingleCPU, CPU) {
             sim.addTopology("T", {p1});
             sim.addTopology("T", {p2});
 
-            sim.createLoop(1e-3).run(1);
+            sim.run(1, 1e-3);
 
             auto topologies = sim.currentTopologies();
 
@@ -530,7 +530,7 @@ TEMPLATE_TEST_CASE("Test topology reactions.", "[topologies]", SingleCPU, CPU) {
             t->graph().addEdgeBetweenParticles(0, 1);
             t->graph().addEdgeBetweenParticles(1, 2);
 
-            sim.createLoop(1e-3).run(1);
+            sim.run(1, 1e-3);
 
             auto topologies = sim.currentTopologies();
 

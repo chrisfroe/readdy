@@ -51,16 +51,17 @@ namespace readdy {
 namespace kernel {
 namespace cpu {
 namespace actions {
-class CPUUpdateNeighborList : public readdy::model::actions::UpdateNeighborList {
-    using super = readdy::model::actions::UpdateNeighborList;
+class CPUUpdateNeighborList : public readdy::model::actions::NeighborListAction {
+    using super = readdy::model::actions::NeighborListAction;
 public:
 
-    CPUUpdateNeighborList(CPUKernel *kernel, super::Operation op, scalar skin) : super(op, skin), kernel(kernel) {}
+    CPUUpdateNeighborList(CPUKernel *kernel, super::Operation op, scalar interactionDistance)
+            : super(op, interactionDistance), kernel(kernel) {}
 
     void perform() override {
         switch (operation) {
             case init:
-                kernel->getCPUKernelStateModel().initializeNeighborList(skinSize);
+                kernel->getCPUKernelStateModel().initializeNeighborList(_interactionDistance);
                 break;
             case clear:
                 kernel->getCPUKernelStateModel().clearNeighborList();

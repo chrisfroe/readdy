@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
- * @file UncontrolledApproximation.h
- * @brief << brief description >>
+ * @file CPUUncontrolledApproximation.h
+ * @brief CPU kernel declaration of reaction handler UncontrolledApproximation
  * @author clonker
  * @date 20.10.16
  */

@@ -52,11 +52,13 @@ namespace model {
 namespace actions {
 
 
-UpdateNeighborList::UpdateNeighborList(UpdateNeighborList::Operation operation, scalar skinSize)
-        : operation(operation), skinSize(skinSize) {
+NeighborListAction::NeighborListAction(Operation operation, scalar interactionDistance)
+        : operation(operation), _interactionDistance(interactionDistance) {
 }
 
 EulerBDIntegrator::EulerBDIntegrator(scalar timeStep) : TimeStepDependentAction(timeStep) {}
+
+MdgfrdIntegrator::MdgfrdIntegrator(scalar timeStep) : TimeStepDependentAction(timeStep) {}
 
 reactions::UncontrolledApproximation::UncontrolledApproximation(scalar timeStep) : TimeStepDependentAction(timeStep) {}
 

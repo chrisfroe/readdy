@@ -79,7 +79,7 @@ NAMESPACE_BEGIN(api)
  * superclass for all simulation schemes
  */
 class SimulationLoop {
-    using NeighborListOps = model::actions::UpdateNeighborList::Operation;
+    using NeighborListOps = model::actions::NeighborListAction::Operation;
 public:
     /**
      * the type of function that is responsible for deciding whether the simulation should continue
@@ -92,15 +92,16 @@ public:
     /**
      * Creates a new simulation scheme.
      * @param kernel the kernel
+     * @param timeStep the time step width
      */
     explicit SimulationLoop(model::Kernel *const kernel, scalar timeStep)
             : _kernel(kernel), _timeStep(timeStep),
               _integrator(kernel->actions().eulerBDIntegrator(timeStep).release()),
               _reactions(kernel->actions().gillespie(timeStep).release()),
               _forces(kernel->actions().calculateForces().release()),
-              _initNeighborList(kernel->actions().updateNeighborList(NeighborListOps::init).release()),
-              _neighborList(kernel->actions().updateNeighborList(NeighborListOps::update).release()),
-              _clearNeighborList(kernel->actions().updateNeighborList(NeighborListOps::clear).release()),
+              _initNeighborList(kernel->actions().initNeighborList(kernel->context().calculateMaxCutoff()).release()),
+              _neighborList(kernel->actions().updateNeighborList().release()),
+              _clearNeighborList(kernel->actions().clearNeighborList().release()),
               _topologyReactions(kernel->actions().evaluateTopologyReactions(timeStep).release()) {}
 
     /**
@@ -200,9 +201,22 @@ public:
         configGroup = std::make_unique<h5rd::Group>(file.createGroup("readdy/config"));
     }
 
-    scalar &skinSize() { return _skinSize; }
+    scalar &neighborListDistance() {
+        if (_initNeighborList) {
+            return _initNeighborList->interactionDistance();
+        } else {
+            throw std::logic_error("There is no neighbor list. There are no interactions which would require one.");
+        }
 
-    const scalar &skinSize() const { return _skinSize; }
+    }
+
+    const scalar &neighborListDistance() const {
+        if (_initNeighborList) {
+            return _initNeighborList->interactionDistance();
+        } else {
+            throw std::logic_error("There is no neighbor list. There are no interactions which would require one.");
+        }
+    }
 
     /**
      * This method runs a simulation for a fixed number of time steps by providing an appropriate continue function.
@@ -212,14 +226,14 @@ public:
         // show every 100 time steps
         if (!_progressCallback) {
             _progressCallback = [this, steps](time_step_type current) {
-                log::info("Simulation progress: {} / {} steps", (current - start), steps);
+                log::info("Simulation progress: {} / {} steps", (current - _start), steps);
             };
         }
         auto defaultContinueCriterion = [this, steps](const time_step_type current) {
-            if (current != start && _progressOutputStride > 0 && (current - start) % _progressOutputStride == 0) {
+            if (current != _start && _progressOutputStride > 0 && (current - _start) % _progressOutputStride == 0) {
                 _progressCallback(current);
             }
-            return current < start + steps;
+            return current < _start + steps;
         };
         run(defaultContinueCriterion);
     };
@@ -237,16 +251,15 @@ public:
                 if (!(_initNeighborList && _neighborList && _clearNeighborList)) {
                     throw std::logic_error("Neighbor list required but set to null!");
                 }
-                _initNeighborList->skin() = _skinSize;
-                _neighborList->skin() = _skinSize;
-                _clearNeighborList->skin() = _skinSize;
+                _initNeighborList->interactionDistance() = std::max(_initNeighborList->interactionDistance(),
+                                                                    kernel()->context().calculateMaxCutoff());
             }
             runInitialize();
             if (requiresNeighborList) runInitializeNeighborList();
             runForces();
-            time_step_type t = start;
+            time_step_type t = _start;
             runEvaluateObservables(t);
-            std::for_each(std::begin(_callbacks), std::end(_callbacks), [t](const auto& callback) {
+            std::for_each(std::begin(_callbacks), std::end(_callbacks), [t](const auto &callback) {
                 callback(t);
             });
             while (continueFun(t)) {
@@ -257,13 +270,15 @@ public:
                 if (requiresNeighborList) runUpdateNeighborList();
                 runForces();
                 runEvaluateObservables(t + 1);
-                std::for_each(std::begin(_callbacks), std::end(_callbacks), [t](const auto& callback) {
-                    callback(t+1);
+                std::for_each(std::begin(_callbacks), std::end(_callbacks), [t](const auto &callback) {
+                    callback(t + 1);
                 });
                 ++t;
+
+                _kernel->stateModel().time() += _timeStep;
             }
             if (requiresNeighborList) runClearNeighborList();
-            start = t;
+            _start = t;
             log::info("Simulation completed");
         }
     }
@@ -312,15 +327,14 @@ protected:
     std::shared_ptr<model::actions::TimeStepDependentAction> _integrator{nullptr};
     std::shared_ptr<model::actions::Action> _forces{nullptr};
     std::shared_ptr<model::actions::TimeStepDependentAction> _reactions{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _initNeighborList{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _neighborList{nullptr};
+    std::shared_ptr<model::actions::NeighborListAction> _initNeighborList{nullptr};
+    std::shared_ptr<model::actions::NeighborListAction> _neighborList{nullptr};
     std::shared_ptr<model::actions::top::EvaluateTopologyReactions> _topologyReactions{nullptr};
-    std::shared_ptr<model::actions::UpdateNeighborList> _clearNeighborList{nullptr};
-    scalar _skinSize = 0;
+    std::shared_ptr<model::actions::NeighborListAction> _clearNeighborList{nullptr};
     std::shared_ptr<h5rd::Group> configGroup = nullptr;
 
     bool _evaluateObservables = true;
-    time_step_type start = 0;
+    time_step_type _start = 0;
     std::size_t _progressOutputStride = 100;
     std::function<void(time_step_type)> _progressCallback;
     scalar _timeStep;

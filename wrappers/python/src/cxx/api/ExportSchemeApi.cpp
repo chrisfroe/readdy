@@ -34,8 +34,6 @@
 
 
 /**
- * << detailed description >>
- *
  * @file ExportSchemeApi.h
  * @brief << brief description >>
  * @author clonker
@@ -105,8 +103,8 @@ void exportSchemeApi(pybind11::module &module) {
                 self.evaluateTopologyReactions(evaluate, timeStep.is_none() ? self.timeStep() : timeStep.cast<readdy::scalar>());
             }, "evaluate"_a, "timeStep"_a = py::none())
             .def("evaluate_observables", &Loop::evaluateObservables, "evaluate"_a)
-            .def_property("skin_size", [](const Loop &self) { return self.skinSize(); },
-                          [](Loop &self, readdy::scalar skin) { self.skinSize() = skin; })
+            .def_property("neighbor_list_distance", [](const Loop &self) { return self.interactionDistance(); },
+                          [](Loop &self, readdy::scalar distance) { self.interactionDistance() = distance; })
             .def("validate", &Loop::validate);
 }
 

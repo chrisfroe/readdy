@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
- * @file Gillespie.cpp
- * @brief << brief description >>
+ * @file CPUGillespie.cpp
+ * @brief CPU kernel implementation of Gillespie-order reaction handler
  * @author clonker
  * @date 20.10.16
  */

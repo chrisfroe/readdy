@@ -193,6 +193,7 @@ public:
 protected:
 
     model::Context _context;
+    SimulationParams _simulationParams;
     std::string _name;
     observables::signal_type _signal;
 };

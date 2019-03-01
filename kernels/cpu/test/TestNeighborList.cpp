@@ -201,7 +201,7 @@ TEST_CASE("Test cpu neighbor list", "[cpu]") {
         {
             readdy::api::SimulationLoop loop (kernel.get(), .01);
             loop.useReactionScheduler("Gillespie");
-            loop.skinSize() = .1;
+            loop.neighborListDistance() += .1; // adding a skin/padding
             loop.run(100);
         }
     }
@@ -259,7 +259,7 @@ TEST_CASE("Test cpu neighbor list", "[cpu]") {
         {
             readdy::api::SimulationLoop loop(kernel.get(), .01);
             loop.useReactionScheduler("Gillespie");
-            loop.skinSize() = .1;
+            loop.neighborListDistance() += .1; // adding a padding/skin
             loop.run(100);
         }
     }

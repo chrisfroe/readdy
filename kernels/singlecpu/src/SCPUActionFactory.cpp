@@ -41,6 +41,7 @@
 
 #include <readdy/kernel/singlecpu/actions/SCPUActionFactory.h>
 #include <readdy/kernel/singlecpu/actions/SCPUEulerBDIntegrator.h>
+#include <readdy/kernel/singlecpu/actions/SCPUMdgfrdIntegrator.h>
 #include <readdy/kernel/singlecpu/actions/SCPUCalculateForces.h>
 #include <readdy/kernel/singlecpu/actions/SCPUReactionImpls.h>
 #include <readdy/kernel/singlecpu/actions/SCPUUpdateNeighborList.h>
@@ -49,10 +50,8 @@
 
 namespace core_actions = readdy::model::actions;
 
-namespace readdy {
-namespace kernel {
-namespace scpu {
-namespace actions {
+namespace readdy::kernel::scpu::actions {
+
 SCPUActionFactory::SCPUActionFactory(SCPUKernel *const kernel) : kernel(kernel) {}
 
 namespace rma = readdy::model::actions;
@@ -61,7 +60,7 @@ std::vector<std::string> SCPUActionFactory::getAvailableActions() const {
     return {
             rma::getActionName<rma::AddParticles>(), rma::getActionName<rma::EulerBDIntegrator>(),
             rma::getActionName<rma::CalculateForces>(),
-            rma::getActionName<rma::UpdateNeighborList>(),
+            rma::getActionName<rma::NeighborListAction>(),
             rma::getActionName<rma::reactions::UncontrolledApproximation>(),
             rma::getActionName<rma::reactions::Gillespie>(),
             rma::getActionName<rma::top::EvaluateTopologyReactions>()
@@ -72,14 +71,18 @@ std::unique_ptr<readdy::model::actions::EulerBDIntegrator> SCPUActionFactory::eu
     return {std::make_unique<SCPUEulerBDIntegrator>(kernel, timeStep)};
 }
 
+std::unique_ptr<readdy::model::actions::MdgfrdIntegrator>
+SCPUActionFactory::mdgfrdIntegrator(scalar timeStep) const {
+    return {std::make_unique<SCPUMdgfrdIntegrator>(kernel, timeStep)};
+}
+
 std::unique_ptr<readdy::model::actions::CalculateForces> SCPUActionFactory::calculateForces() const {
     return {std::make_unique<SCPUCalculateForces>(kernel)};
 }
 
-std::unique_ptr<readdy::model::actions::UpdateNeighborList>
-SCPUActionFactory::updateNeighborList(readdy::model::actions::UpdateNeighborList::Operation operation,
-                                      scalar skinSize) const {
-    return {std::make_unique<SCPUUpdateNeighborList>(kernel, operation, skinSize)};
+std::unique_ptr<readdy::model::actions::NeighborListAction>
+SCPUActionFactory::neighborListAction(readdy::model::actions::NeighborListAction::Operation operation, scalar interactionDistance) const {
+    return {std::make_unique<SCPUUpdateNeighborList>(kernel, operation, interactionDistance)};
 }
 
 std::unique_ptr<readdy::model::actions::EvaluateCompartments> SCPUActionFactory::evaluateCompartments() const {
@@ -106,8 +109,3 @@ SCPUActionFactory::detailedBalance(scalar timeStep) const {
 }
 
 }
-}
-}
-}
-
-

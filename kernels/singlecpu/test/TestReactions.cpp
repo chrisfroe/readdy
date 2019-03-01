@@ -34,10 +34,7 @@
 
 
 /**
- * << detailed description >>
- *
  * @file TestReactions.cpp
- * @brief << brief description >>
  * @author clonker
  * @date 22.06.16
  */
@@ -59,9 +56,8 @@ TEST_CASE("Test single cpu decay reactions", "[scpu]") {
     readdy::scalar timeStep = 1.0;
     auto &&integrator = kernel->actions().eulerBDIntegrator(timeStep);
     auto &&forces = kernel->actions().calculateForces();
-    using update_nl = readdy::model::actions::UpdateNeighborList;
-    auto &&initNeighborList = kernel->actions().updateNeighborList(update_nl::Operation::init, 0);
-    auto &&neighborList = kernel->actions().updateNeighborList(update_nl::Operation::update, 0);
+    auto &&initNeighborList = kernel->actions().initNeighborList(0);
+    auto &&neighborList = kernel->actions().updateNeighborList();
     auto &&reactions = kernel->actions().uncontrolledApproximation(timeStep);
 
     auto pp_obs = kernel->observe().positions(1);
@@ -134,8 +130,11 @@ TEST_CASE("Test single cpu multiple reaction types", "[scpu]") {
     kernel->context().reactions().addConversion("E->A", "E", "A", 1e16);
     kernel->context().reactions().addConversion("C->D", "C", "D", 1e16);
 
+    const auto maxCutoff = kernel->context().calculateMaxCutoff();
+
     auto &&integrator = kernel->actions().eulerBDIntegrator(1);
     auto &&forces = kernel->actions().calculateForces();
+    auto &&initNeighborList = kernel->actions().initNeighborList(maxCutoff);
     auto &&neighborList = kernel->actions().updateNeighborList();
     auto &&reactions = kernel->actions().uncontrolledApproximation(1);
 
@@ -154,6 +153,8 @@ TEST_CASE("Test single cpu multiple reaction types", "[scpu]") {
     auto pred_contains_C = [=](const readdy::model::Particle &p) { return p.type() == typeId_C; };
     auto pred_contains_D = [=](const readdy::model::Particle &p) { return p.type() == typeId_D; };
     auto pred_contains_E = [=](const readdy::model::Particle &p) { return p.type() == typeId_E; };
+
+    initNeighborList->perform();
 
     for (unsigned int t = 0; t < 4; t++) {
 

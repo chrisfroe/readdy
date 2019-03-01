@@ -94,6 +94,17 @@ public:
     ~EulerBDIntegrator() override = default;
 };
 
+class MdgfrdIntegrator : public TimeStepDependentAction {
+public:
+    explicit MdgfrdIntegrator(scalar timeStep);
+
+    ~MdgfrdIntegrator() override = default;
+};
+
+/**
+ * Calculates all forces and energies resulting from potentials (external, pair-potentials, bonded).
+ * Optionally calculate the virial which is required if the pressure in the system shall be measured.
+ */
 class CalculateForces : public Action {
 public:
     CalculateForces();
@@ -101,23 +112,23 @@ public:
     ~CalculateForces() override = default;
 };
 
-class UpdateNeighborList : public Action {
+class NeighborListAction : public Action {
 public:
     enum Operation {
         init, update, clear
     };
 
-    explicit UpdateNeighborList(Operation operation = Operation::init, scalar skinSize = 0);
+    explicit NeighborListAction(Operation operation, scalar interactionDistance);
 
-    ~UpdateNeighborList() override = default;
+    ~NeighborListAction() override = default;
 
-    scalar &skin() { return skinSize; }
+    scalar &interactionDistance() { return _interactionDistance; }
 
-    const scalar &skin() const { return skinSize; }
+    const scalar &interactionDistance() const { return _interactionDistance; }
 
 protected:
     Operation operation;
-    scalar skinSize;
+    scalar _interactionDistance;
 };
 
 NAMESPACE_BEGIN(reactions)
@@ -172,6 +183,13 @@ public:
 
 NAMESPACE_END(top)
 
+/**
+ * The Compartments feature defines compartments via characteristic functions that map from Vec3 to bool.
+ * For every compartment one can then define conversions that should take place as soon as a particle
+ * enters the compartment. Note that the user is responsible for keeping the compartments disjoint.
+ *
+ * The EvaluateCompartments action performs these conversions.
+ */
 class EvaluateCompartments : public Action {
 public:
     explicit EvaluateCompartments() : Action() {}
@@ -190,12 +208,17 @@ const std::string getActionName(typename std::enable_if<std::is_base_of<EulerBDI
 }
 
 template<typename T>
+const std::string getActionName(typename std::enable_if<std::is_base_of<MdgfrdIntegrator, T>::value>::type * = 0) {
+    return "MdgfrdIntegrator";
+}
+
+template<typename T>
 const std::string getActionName(typename std::enable_if<std::is_base_of<CalculateForces, T>::value>::type * = 0) {
     return "Calculate forces";
 }
 
 template<typename T>
-const std::string getActionName(typename std::enable_if<std::is_base_of<UpdateNeighborList, T>::value>::type * = 0) {
+const std::string getActionName(typename std::enable_if<std::is_base_of<NeighborListAction, T>::value>::type * = 0) {
     return "Update neighbor list";
 }
 

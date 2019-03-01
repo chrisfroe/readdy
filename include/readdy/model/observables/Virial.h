@@ -34,12 +34,13 @@
 
 
 /**
- * << detailed description >>
+ * The virial is the outer product of a pair-wise interaction force with the connecting distance vector.
+ * Averaged over the ensemble of particles and time it will give an estimate for the systems pressure
  *
  * @file Virial.h
- * @brief << brief description >>
+ * @brief Declaration of Virial observable
  * @author clonker
- * @date 1/17/18
+ * @date 17.01.18
  */
 
 

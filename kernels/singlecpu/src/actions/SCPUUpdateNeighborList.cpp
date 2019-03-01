@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
- * @file SingleCPUUpdateNeighborList.cpp
- * @brief << brief description >>
+ * @file SCPUUpdateNeighborList.cpp
+ * @brief Single CPU kernel implementation of NeighborListAction
  * @author clonker
  * @date 11.07.16
  */
@@ -53,7 +51,7 @@ namespace actions {
 void SCPUUpdateNeighborList::perform() {
     switch (operation) {
         case init:
-            kernel->getSCPUKernelStateModel().getNeighborList()->setUp(skinSize > 0 ? skinSize : 0, 1);
+            kernel->getSCPUKernelStateModel().getNeighborList()->setUp(_interactionDistance > 0 ? _interactionDistance : 0, 1);
             break;
         case clear:
             kernel->stateModel().clearNeighborList();
@@ -64,9 +62,8 @@ void SCPUUpdateNeighborList::perform() {
     }
 }
 
-SCPUUpdateNeighborList::SCPUUpdateNeighborList(SCPUKernel *const kernel, core_actions::UpdateNeighborList::Operation op,
-                                               scalar skinSize)
-        : UpdateNeighborList(op, skinSize), kernel(kernel){
+SCPUUpdateNeighborList::SCPUUpdateNeighborList(SCPUKernel *kernel, Operation op, scalar interactionDistance)
+        : NeighborListAction(op, interactionDistance), kernel(kernel) {
 }
 
 }
