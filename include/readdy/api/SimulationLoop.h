@@ -90,7 +90,8 @@ public:
     using ActionPtr = std::shared_ptr<readdy::model::actions::Action>;
 
     /**
-     * Creates a new simulation scheme.
+     * Creates a new simulation scheme. Creates and initializes actions: Sets the neighborlist distance
+     * to be the largest cutoff present in the context.
      * @param kernel the kernel
      * @param timeStep the time step width
      */
@@ -105,7 +106,7 @@ public:
               _topologyReactions(kernel->actions().evaluateTopologyReactions(timeStep).release()) {}
 
     /**
-     * This function gives access the an updateCallback function that gets called every 100 time steps if one is
+     * This function gives access to an progressCallback function that gets called every 100 time steps if one is
      * running the simulation for a fixed number of time steps.
      * @return the callback function
      */
@@ -205,17 +206,20 @@ public:
         if (_initNeighborList) {
             return _initNeighborList->interactionDistance();
         } else {
-            throw std::logic_error("There is no neighbor list. There are no interactions which would require one.");
+            throw std::logic_error("There is no neighbor list. This indicates that there are no interactions which would require one.");
         }
-
     }
 
     const scalar &neighborListDistance() const {
         if (_initNeighborList) {
             return _initNeighborList->interactionDistance();
         } else {
-            throw std::logic_error("There is no neighbor list. There are no interactions which would require one.");
+            throw std::logic_error("There is no neighbor list. This indicates that there are no interactions which would require one.");
         }
+    }
+
+    const scalar calculateMaxCutoff() const {
+        return kernel()->context().calculateMaxCutoff();
     }
 
     /**
@@ -320,6 +324,27 @@ public:
 
     void addCallback(std::function<void(time_step_type)> f) {
         _callbacks.emplace_back(std::move(f));
+    }
+
+    std::string describe() {
+        namespace rus = readdy::util::str;
+        std::string description;
+        description += fmt::format("Configured simulation loop with:{}", rus::newline);
+        description += fmt::format("--------------------------------{}", rus::newline);
+        description += fmt::format(" - timeStep = {}{}", _timeStep, rus::newline);
+        description += fmt::format(" - evaluateObservables = {}{}", _evaluateObservables, rus::newline);
+        description += fmt::format(" - progressOutputStride = {}{}", _progressOutputStride, rus::newline);
+        description += fmt::format(" - context written to file = {}{}", configGroup ? true : false, rus::newline);
+        // todo let actions know their name?
+        description += fmt::format(" - Performing actions:{}", rus::newline);
+        description += fmt::format("   * Initialize neighbor list? {} {}", _initNeighborList ? true : false, rus::newline);
+        description += fmt::format("   * Update neighbor list? {} {}", _neighborList ? true : false, rus::newline);
+        description += fmt::format("   * Clear neighbor list? {} {}", _clearNeighborList ? true : false, rus::newline);
+        description += fmt::format("   * Integrate diffusion? {} {}", _integrator ? true : false, rus::newline);
+        description += fmt::format("   * Calculate forces? {} {}", _forces ? true : false, rus::newline);
+        description += fmt::format("   * Handle reactions? {} {}", _reactions ? true : false, rus::newline);
+        description += fmt::format("   * Handle topology reactions? {} {}", _topologyReactions ? true : false, rus::newline);
+        return description;
     }
 
 protected:
