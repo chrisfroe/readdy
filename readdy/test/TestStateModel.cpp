@@ -82,7 +82,7 @@ TEMPLATE_TEST_CASE("Test state model", "[state-model]", SingleCPU, CPU) {
         calculateForces->perform(); // calculating twice should yield the same result. force and energy must not accumulate
         // check results
         obs->evaluate();
-        auto forcesIt = obs->getResult().begin();
+        auto forcesIt = obs->result().begin();
         if(kernel->doublePrecision()) {
             readdy::testing::vec3eq(*forcesIt, readdy::Vec3(0, 0, -0.2));
         } else {
@@ -155,7 +155,7 @@ TEMPLATE_TEST_CASE("Test state model", "[state-model]", SingleCPU, CPU) {
         // check results
         obs->evaluate();
         const auto particles = stateModel.getParticles();
-        const auto& forces = obs->getResult();
+        const auto& forces = obs->result();
         std::size_t idx = 0;
         for(const auto& particle : particles) {
             if(particle.id() == ids.at(0)) {
@@ -207,7 +207,7 @@ TEMPLATE_TEST_CASE("Test state model", "[state-model]", SingleCPU, CPU) {
         calculateForces->perform();
         // check results
         obs->evaluate();
-        for (auto &&force : obs->getResult()) {
+        for (auto &&force : obs->result()) {
             readdy::testing::vec3eq(force, readdy::Vec3(0, 0, 0));
         }
     }

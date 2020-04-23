@@ -107,15 +107,15 @@ class MPIParticles : public readdy::model::observables::Particles {
 public:
     MPIParticles(MPIKernel *kernel, unsigned int stride);
 
+    // fixme note that returned particle ids are meaningless, they do not reflect the ids present on the workers' states
     void evaluate() override;
 
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIHistogramAlongAxis : public readdy::model::observables::HistogramAlongAxis {
@@ -131,10 +131,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    //todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPINParticles : public readdy::model::observables::NParticles {

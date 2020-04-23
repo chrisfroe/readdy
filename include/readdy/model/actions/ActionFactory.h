@@ -129,6 +129,18 @@ public:
 
     virtual std::unique_ptr<InitializeKernel> initializeKernel() const = 0;
 
+//    virtual std::unique_ptr<RegisterObservable<observables::NParticles>>
+//    registerObservable(std::unique_ptr<observables::NParticles> observable,
+//            const observable_callback<observables::NParticles> &callback) const = 0;
+//
+//    virtual std::unique_ptr<RegisterObservable<observables::HistogramAlongAxis>>
+//    registerObservable(std::unique_ptr<observables::HistogramAlongAxis> observable,
+//                       const observable_callback<observables::HistogramAlongAxis> &callback) const = 0;
+//
+//    virtual std::unique_ptr<RegisterObservable<observables::Energy>>
+//    registerObservable(std::unique_ptr<observables::Energy> observable,
+//                       const observable_callback<observables::Energy> &callback) const = 0;
+
 };
 
 }

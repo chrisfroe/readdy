@@ -37,7 +37,6 @@
  * @file TestSimulationLoop.cpp
  * @author clonker
  * @author chrisfro**
- * @todo test checkpointing https://en.cppreference.com/w/cpp/filesystem/temp_directory_path
  * @date 23.08.16
  */
 

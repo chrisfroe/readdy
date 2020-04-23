@@ -69,14 +69,16 @@ namespace readdy::model {
  * Each Kernel has a #name by which it can be accessed in the KernelProvider.
  */
 class Kernel : public Plugin {
+    using ObservableContainer = std::vector<std::unique_ptr<readdy::model::observables::ObservableBase>>;
+    using ConnectionContainer = std::vector<readdy::signals::scoped_connection>;
 public:
 
     /**
      * Constructs a kernel with a given name.
      */
-    explicit Kernel(std::string name) : Kernel(std::move(name), {}) {};
+    explicit Kernel(std::string name) : Kernel(std::move(name), {}) {}
 
-    Kernel(std::string name, readdy::model::Context ctx) : _name(std::move(name)), _signal(), _context(std::move(ctx)) {};
+    Kernel(std::string name, readdy::model::Context ctx) : _name(std::move(name)), _signal(), _context(std::move(ctx)) {}
 
     /**
      * The kernel destructor.
@@ -94,7 +96,7 @@ public:
      */
     const std::string &name() const override {
         return _name;
-    };
+    }
 
     /**
      * Connects an observable to the kernel signal.
@@ -104,16 +106,16 @@ public:
     virtual readdy::signals::scoped_connection connectObservable(observables::ObservableBase *observable) {
         observable->initialize(this);
         return _signal.connect_scoped([observable](const TimeStep t) {
-            observable->callback(t);
+            observable->call(t);
         });
-    };
+    }
 
     /**
      * Evaluates all observables.
      */
     virtual void evaluateObservables(TimeStep t) {
         _signal(t);
-    };
+    }
 
     /**
      * Returns a vector containing all available action names for this specific kernel instance.
@@ -131,7 +133,7 @@ public:
         readdy::model::Particle particle{pos[0], pos[1], pos[2], context().particleTypes().idOf(type)};
         stateModel().addParticle(particle);
         return particle.id();
-    };
+    }
 
     Particle createTopologyParticle(const std::string &type, const Vec3 &pos) const {
         const auto &info = context().particleTypes().infoOf(type);
@@ -142,11 +144,11 @@ public:
             ));
         }
         return Particle(pos, info.typeId);
-    };
+    }
 
     bool supportsTopologies() const {
         return getTopologyActionFactory() != nullptr;
-    };
+    }
     
     virtual bool supportsGillespie() const {
         return true;
@@ -164,11 +166,11 @@ public:
 
     const readdy::model::Context &context() const {
         return _context;
-    };
+    }
 
     readdy::model::Context &context() {
         return _context;
-    };
+    }
 
     virtual const readdy::model::actions::ActionFactory &actions() const = 0;
 
@@ -184,7 +186,7 @@ public:
 
     virtual void initialize() {
         log::debug(context().describe());
-    };
+    }
 
     bool singlePrecision() const noexcept {
         return readdy::single_precision;
@@ -194,11 +196,52 @@ public:
         return readdy::double_precision;
     }
 
+    const std::vector<std::unique_ptr<readdy::model::observables::ObservableBase>> &registeredObservables() const {
+        return _observables;
+    }
+
+    std::vector<std::unique_ptr<readdy::model::observables::ObservableBase>> &registeredObservables() {
+        return _observables;
+    }
+
+    const std::vector<readdy::signals::scoped_connection> &observableConnections() const {
+        return _observableConnections;
+    }
+
+    std::vector<readdy::signals::scoped_connection> &observableConnections() {
+        return _observableConnections;
+    }
+
+    template<typename T>
+    using observable_callback = typename std::function<void(typename T::result_type)>;
+
+    template<typename T>
+    ObservableHandle registerObservable(std::unique_ptr<T> observable, const observable_callback<T> &callback,
+                                        detail::is_observable_type<T> * = 0) {
+        if (observable->type() == "Reactions") {
+            context().recordReactionsWithPositions() = true;
+        } else if (observable->type() == "ReactionCounts") {
+            context().recordReactionCounts() = true;
+        } else if (observable->type() == "Virial") {
+            context().recordVirial() = true;
+        } else {
+            /* no action required */
+        }
+
+        auto connection = connectObservable(observable.get());
+        observable->setCallback(callback);
+        _observables.push_back(std::move(observable));
+        _observableConnections.push_back(std::move(connection));
+        return ObservableHandle{_observables.back().get()};
+    }
+
 protected:
 
     model::Context _context;
     std::string _name;
     observables::signal_type _signal;
+    ObservableContainer _observables{};
+    ConnectionContainer _observableConnections{};
 };
 
 }

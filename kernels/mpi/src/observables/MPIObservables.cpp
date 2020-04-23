@@ -83,25 +83,40 @@ void MPIPositions::evaluate() {
 MPIParticles::MPIParticles(MPIKernel *kernel, unsigned int stride) : Particles(kernel, stride), kernel(kernel) {}
 
 void MPIParticles::evaluate() {
-    // @todo MPI gather results, only save on master rank
-    auto &resultTypes = std::get<0>(result);
-    auto &resultIds = std::get<1>(result);
-    auto &resultPositions = std::get<2>(result);
-    resultTypes.clear();
-    resultIds.clear();
-    resultPositions.clear();
-    const auto &particleData = kernel->getMPIKernelStateModel().getParticleData();
-    auto it = particleData->cbegin();
-    while (it != particleData->cend()) {
-        if (!it->is_deactivated()) {
-            resultTypes.push_back(it->type);
-            resultIds.push_back(it->id);
-            resultPositions.push_back(it->position());
+    if (not kernel->domain().isIdleRank()) {
+        auto &resultTypes = std::get<0>(result);
+        auto &resultIds = std::get<1>(result);
+        auto &resultPositions = std::get<2>(result);
+        resultTypes.clear();
+        resultIds.clear();
+        resultPositions.clear();
+        auto particles = kernel->getMPIKernelStateModel().gatherParticles();
+        if (kernel->domain().isMasterRank()) {
+            // get my partial results
+            for (const auto &p : particles) {
+                resultTypes.push_back(p.type());
+                resultIds.push_back(p.id());
+                resultPositions.push_back(p.pos());
+            }
         }
-        ++it;
+    } else {
+        // noop for idlers
     }
 }
 
+void MPIParticles::append() {
+    // noop for workers
+    if (kernel->domain().isMasterRank()) {
+        Particles::append();
+    }
+}
+
+void MPIParticles::initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) {
+    // noop for workers
+    if (kernel->domain().isMasterRank()) {
+        Particles::initializeDataSet(file, dataSetName, flushStride);
+    }
+}
 
 MPIHistogramAlongAxis::MPIHistogramAlongAxis(MPIKernel *kernel, unsigned int stride,
                                              const std::vector<scalar> &binBorders,
@@ -131,6 +146,18 @@ void MPIHistogramAlongAxis::evaluate() {
         ++it;
     }
 
+}
+
+void MPIHistogramAlongAxis::append() {
+    if (kernel->domain().isMasterRank()) {
+        HistogramAlongAxis::append();
+    }
+}
+
+void MPIHistogramAlongAxis::initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) {
+    if (kernel->domain().isMasterRank()) {
+        HistogramAlongAxis::initializeDataSet(file, dataSetName, flushStride);
+    }
 }
 
 MPINParticles::MPINParticles(MPIKernel *kernel, unsigned int stride, std::vector<std::string> typesToCount)

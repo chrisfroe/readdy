@@ -152,7 +152,7 @@ public:
      * getAvailableObservables().
      * @tparam observable type
      * @param observable the observable
-     * @return a uuid with which the observable is associated
+     * @return a observable handle that allows for post-hoc modification of the observable
      */
     template<typename T>
     ObservableHandle registerObservable(std::unique_ptr<T> observable, detail::is_observable_type<T> * = 0) {
@@ -170,21 +170,22 @@ public:
     template<typename T>
     ObservableHandle registerObservable(std::unique_ptr<T> observable, const observable_callback<T> &callback,
                                         detail::is_observable_type<T> * = 0) {
-        if (observable->type() == "Reactions") {
-            _kernel->context().recordReactionsWithPositions() = true;
-        } else if (observable->type() == "ReactionCounts") {
-            _kernel->context().recordReactionCounts() = true;
-        } else if (observable->type() == "Virial") {
-            _kernel->context().recordVirial() = true;
-        } else {
-            /* no action required */
-        }
-
-        auto connection = _kernel->connectObservable(observable.get());
-        observable->callback() = callback;
-        _observables.push_back(std::move(observable));
-        _observableConnections.push_back(std::move(connection));
-        return ObservableHandle{_observables.back().get()};
+//        if (observable->type() == "Reactions") {
+//            _kernel->context().recordReactionsWithPositions() = true;
+//        } else if (observable->type() == "ReactionCounts") {
+//            _kernel->context().recordReactionCounts() = true;
+//        } else if (observable->type() == "Virial") {
+//            _kernel->context().recordVirial() = true;
+//        } else {
+//            /* no action required */
+//        }
+//
+//        auto connection = _kernel->connectObservable(observable.get());
+//        observable->callback() = callback;
+//        _kernel->registeredObservables().push_back(std::move(observable));
+//        _kernel->observableConnections().push_back(std::move(connection));
+//        return ObservableHandle{_kernel->registeredObservables().back().get()};
+        return _kernel->registerObservable(std::move(observable), callback);
     }
 
     /**
@@ -192,7 +193,7 @@ public:
      * @param type the type
      * @return a vector containing the particle positions
      */
-    std::vector<Vec3> getParticlePositions(const std::string &type) {
+    [[nodiscard]] std::vector<Vec3> getParticlePositions(const std::string &type) {
         auto typeId = _kernel->context().particleTypes().idOf(type);
         const auto particles = _kernel->stateModel().getParticles();
         std::vector<Vec3> positions;
@@ -216,7 +217,8 @@ public:
     void addParticle(const std::string &type, scalar x, scalar y, scalar z) {
         const auto &s = context().boxSize();
         if (fabs(x) <= .5 * s[0] && fabs(y) <= .5 * s[1] && fabs(z) <= .5 * s[2]) {
-            _kernel->stateModel().addParticle({x, y, z, context().particleTypes().idOf(type)});
+            readdy::model::Particle p{x, y, z, context().particleTypes().idOf(type)};
+            _kernel->actions().addParticles(p)->perform();
         } else {
             log::error("particle position was not in bounds of the simulation box!");
         }
@@ -231,7 +233,7 @@ public:
     }
 
     /**
-     * Yields a nonmodifyable reference to the current context of this simulation.
+     * Yields a nonmodifiable reference to the current context of this simulation.
      * @return cref to the context
      */
     [[nodiscard]] const model::Context &context() const {
@@ -299,8 +301,6 @@ public:
 
 private:
     plugin::KernelProvider::kernel_ptr _kernel;
-    std::vector<std::unique_ptr<readdy::model::observables::ObservableBase>> _observables{};
-    std::vector<readdy::signals::scoped_connection> _observableConnections{};
 };
 
 }
