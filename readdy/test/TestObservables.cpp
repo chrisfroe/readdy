@@ -74,7 +74,7 @@ TEMPLATE_TEST_CASE("Test observables", "[observables]", SingleCPU, CPU) {
             kernel->evaluateObservables(t);
         }
 
-        const auto &result = obs->result();
+        const auto &result = obs->getResult();
         const auto &&positions = kernel->stateModel().getParticlePositions();
         auto it_pos = positions.begin();
         int j = 0;
@@ -178,7 +178,7 @@ TEMPLATE_TEST_CASE("Test observables", "[observables]", SingleCPU, CPU) {
             std::size_t n_time_steps = 500;
 
             auto obs = kernel->observe().topologies(1);
-            obs->callback() = ([&](const readdy::model::observables::Topologies::result_type &value) {
+            obs->setCallback([&](const readdy::model::observables::Topologies::result_type &value) {
                 auto tops = kernel->stateModel().getTopologies();
                 REQUIRE(value.size() == tops.size());
                 for (auto its = std::make_pair(tops.begin(), value.begin());
@@ -272,9 +272,9 @@ TEMPLATE_TEST_CASE("Test observables", "[observables]", SingleCPU, CPU) {
             // Evaluate twice to ensure that results do not accumulate
             kernel->evaluateObservables(0);
             kernel->evaluateObservables(1);
-            const auto &resA = obsA->result();
-            const auto &resB = obsB->result();
-            const auto &resBoth = obsBoth->result();
+            const auto &resA = obsA->getResult();
+            const auto &resB = obsB->getResult();
+            const auto &resBoth = obsBoth->getResult();
             REQUIRE(resA.size() == n_particles);
             REQUIRE(resB.size() == n_particles+5);
             REQUIRE(resBoth.size() == n_particles + n_particles + 5);
@@ -307,7 +307,7 @@ TEMPLATE_TEST_CASE("Test observables", "[observables]", SingleCPU, CPU) {
             nl->perform();
             forces->perform();
             kernel->evaluateObservables(2);
-            const auto &resC = obsC->result();
+            const auto &resC = obsC->getResult();
             readdy::Vec3 force0 = readdy::Vec3(0., 1., 0.);
             readdy::Vec3 force1 = readdy::Vec3(0., -1., 0.);
             REQUIRE(resC.size() == 2);

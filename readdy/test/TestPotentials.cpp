@@ -236,9 +236,9 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             // also record forces
             auto fObs = kernel->observe().forces(1);
             std::vector<readdy::Vec3> collectedForces;
-            fObs->callback() = [&collectedForces](const readdy::model::observables::Forces::result_type &result) {
+            fObs->setCallback([&collectedForces](const readdy::model::observables::Forces::result_type &result) {
                 collectedForces.insert(collectedForces.end(), result.begin(), result.end());
-            };
+            });
             auto connForces = kernel->connectObservable(fObs.get());
 
             kernel->initialize();
@@ -275,17 +275,17 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             // record ids to get data-structure-indexes of the two particles later on
             auto pObs = kernel->observe().particles(1);
             std::vector<readdy::ParticleId> ids;
-            pObs->callback() = [&ids](const readdy::model::observables::Particles::result_type &result) {
+            pObs->setCallback([&ids](const readdy::model::observables::Particles::result_type &result) {
                 const auto &recordedIds = std::get<1>(result);
                 ids.insert(ids.end(), recordedIds.begin(), recordedIds.end());
-            };
+            });
             auto connParticles = kernel->connectObservable(pObs.get());
             // also record forces
             auto fObs = kernel->observe().forces(1);
             std::vector<readdy::Vec3> collectedForces;
-            fObs->callback() = [&collectedForces](const readdy::model::observables::Forces::result_type &result) {
+            fObs->setCallback([&collectedForces](const readdy::model::observables::Forces::result_type &result) {
                 collectedForces.insert(collectedForces.end(), result.begin(), result.end());
-            };
+            });
             auto connForces = kernel->connectObservable(fObs.get());
 
             kernel->initialize();
@@ -333,17 +333,17 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             // record ids to get data-structure-indexes of the two particles later on
             auto pObs = kernel->observe().particles(1);
             std::vector<readdy::ParticleId> ids;
-            pObs->callback() = [&ids](const readdy::model::observables::Particles::result_type &result) {
+            pObs->setCallback([&ids](const readdy::model::observables::Particles::result_type &result) {
                 const auto &recordedIds = std::get<1>(result);
                 ids.insert(ids.end(), recordedIds.begin(), recordedIds.end());
-            };
+            });
             auto connParticles = kernel->connectObservable(pObs.get());
             // also record forces
             auto fObs = kernel->observe().forces(1);
             std::vector<readdy::Vec3> collectedForces;
-            fObs->callback() = [&collectedForces](const readdy::model::observables::Forces::result_type &result) {
+            fObs->setCallback([&collectedForces](const readdy::model::observables::Forces::result_type &result) {
                 collectedForces.insert(collectedForces.end(), result.begin(), result.end());
-            };
+            });
             auto connForces = kernel->connectObservable(fObs.get());
 
             kernel->initialize();
@@ -398,17 +398,17 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             // record ids
             auto pObs = kernel->observe().particles(1);
             std::vector<readdy::ParticleId> ids;
-            pObs->callback() = [&ids](const readdy::model::observables::Particles::result_type& result) {
+            pObs->setCallback([&ids](const readdy::model::observables::Particles::result_type& result) {
                 const auto& recordedIds = std::get<1>(result);
                 ids.insert(ids.end(), recordedIds.begin(), recordedIds.end());
-            };
+            });
             auto connParticles = kernel->connectObservable(pObs.get());
             // also record forces
             auto fObs = kernel->observe().forces(1);
             std::vector<readdy::Vec3> collectedForces;
-            fObs->callback() = [&collectedForces](const readdy::model::observables::Forces::result_type& result) {
+            fObs->setCallback([&collectedForces](const readdy::model::observables::Forces::result_type& result) {
                 collectedForces.insert(collectedForces.end(), result.begin(), result.end());
-            };
+            });
             auto conn = kernel->connectObservable(fObs.get());
 
             // we need to update the neighbor list as this is a pair potential
@@ -465,17 +465,17 @@ TEMPLATE_TEST_CASE("Test potentials", "[potentials]", SingleCPU, CPU) {
             // record ids to get data-structure-indexes of the two particles later on
             auto pObs = kernel->observe().particles(1);
             std::vector<readdy::ParticleId> ids;
-            pObs->callback() = [&ids](const readdy::model::observables::Particles::result_type &result) {
+            pObs->setCallback([&ids](const readdy::model::observables::Particles::result_type &result) {
                 const auto &recordedIds = std::get<1>(result);
                 ids.insert(ids.end(), recordedIds.begin(), recordedIds.end());
-            };
+            });
             auto connParticles = kernel->connectObservable(pObs.get());
             // also record forces
             auto fObs = kernel->observe().forces(1);
             std::vector<readdy::Vec3> collectedForces;
-            fObs->callback() = [&collectedForces](const readdy::model::observables::Forces::result_type &result) {
+            fObs->setCallback([&collectedForces](const readdy::model::observables::Forces::result_type &result) {
                 collectedForces.insert(collectedForces.end(), result.begin(), result.end());
-            };
+            });
             auto conn = kernel->connectObservable(fObs.get());
 
             // we need to update the neighbor list as this is a pair potential

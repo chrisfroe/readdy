@@ -66,29 +66,34 @@ MPIObservableFactory::forces(Stride stride, std::vector<std::string> typesToCoun
     return {std::make_unique<MPIForces>(kernel, stride, typesToCount)};
 }
 
-std::unique_ptr<readdy::model::observables::Positions>
-MPIObservableFactory::positions(Stride stride, std::vector<std::string> typesToCount) const {
+std::unique_ptr<Positions>
+MPIObservableFactory::positions(Stride stride, std::vector<std::string> typesToCount,
+                                std::function<void(std::vector<Vec3>)> callback) const {
     return {std::make_unique<MPIPositions>(kernel, stride, typesToCount)};
 }
 
-std::unique_ptr<readdy::model::observables::RadialDistribution>
+std::unique_ptr<RadialDistribution>
 MPIObservableFactory::radialDistribution(Stride stride, std::vector<scalar> binBorders,
-                                         std::vector<std::string> typeCountFrom, std::vector<std::string> typeCountTo,
-                                         scalar particleDensity) const {
+                                         std::vector<std::string> typeCountFrom,
+                                         std::vector<std::string> typeCountTo, scalar particleDensity,
+                                         readdy::model::observables::ObservableFactory::ObsCallBack<RadialDistribution> callback) const {
     return {std::make_unique<readdy::model::observables::RadialDistribution>(
             kernel, stride, binBorders, typeCountFrom, typeCountTo, particleDensity
     )};
 }
 
-std::unique_ptr<readdy::model::observables::Particles> MPIObservableFactory::particles(Stride stride) const {
+std::unique_ptr<Particles> MPIObservableFactory::particles(Stride stride,
+                                                           readdy::model::observables::ObservableFactory::ObsCallBack<Particles> callback) const {
     return {std::make_unique<MPIParticles>(kernel, stride)};
 }
 
-std::unique_ptr<readdy::model::observables::Reactions> MPIObservableFactory::reactions(Stride stride) const {
+std::unique_ptr<Reactions> MPIObservableFactory::reactions(Stride stride,
+                                                           readdy::model::observables::ObservableFactory::ObsCallBack<Reactions> callback) const {
     return {std::make_unique<MPIReactions>(kernel, stride)};
 }
 
-std::unique_ptr<readdy::model::observables::ReactionCounts> MPIObservableFactory::reactionCounts(Stride stride) const {
+std::unique_ptr<ReactionCounts> MPIObservableFactory::reactionCounts(Stride stride,
+                                                                     readdy::model::observables::ObservableFactory::ObsCallBack<ReactionCounts> callback) const {
     return {std::make_unique<MPIReactionCounts>(kernel, stride)};
 }
 

@@ -212,31 +212,7 @@ public:
         return _observableConnections;
     }
 
-    template<typename T>
-    using observable_callback = typename std::function<void(typename T::result_type)>;
-
-    template<typename T>
-    ObservableHandle registerObservable(std::unique_ptr<T> observable, const observable_callback<T> &callback,
-                                        detail::is_observable_type<T> * = 0) {
-        if (observable->type() == "Reactions") {
-            context().recordReactionsWithPositions() = true;
-        } else if (observable->type() == "ReactionCounts") {
-            context().recordReactionCounts() = true;
-        } else if (observable->type() == "Virial") {
-            context().recordVirial() = true;
-        } else {
-            /* no action required */
-        }
-
-        auto connection = connectObservable(observable.get());
-        observable->setCallback(callback);
-        _observables.push_back(std::move(observable));
-        _observableConnections.push_back(std::move(connection));
-        return ObservableHandle{_observables.back().get()};
-    }
-
 protected:
-
     model::Context _context;
     std::string _name;
     observables::signal_type _signal;

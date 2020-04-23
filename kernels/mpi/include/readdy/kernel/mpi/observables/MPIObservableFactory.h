@@ -68,18 +68,19 @@ public:
     std::unique_ptr<readdy::model::observables::Forces>
     forces(Stride stride, std::vector<std::string> typesToCount) const override;
 
-    std::unique_ptr<readdy::model::observables::Positions>
-    positions(Stride stride, std::vector<std::string> typesToCount) const override;
+    std::unique_ptr<Positions>
+    positions(Stride stride, std::vector<std::string> typesToCount, ObsCallBack <Positions> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::RadialDistribution>
+    std::unique_ptr<RadialDistribution>
     radialDistribution(Stride stride, std::vector<scalar> binBorders, std::vector<std::string> typeCountFrom,
-                       std::vector<std::string> typeCountTo, scalar particleDensity) const override;
+                       std::vector<std::string> typeCountTo, scalar particleDensity,
+                       ObsCallBack <RadialDistribution> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Particles> particles(Stride stride) const override;
+    std::unique_ptr<Particles> particles(Stride stride, ObsCallBack <Particles> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Reactions> reactions(Stride stride) const override;
+    std::unique_ptr<Reactions> reactions(Stride stride, ObsCallBack <Reactions> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::ReactionCounts> reactionCounts(Stride stride) const override;
+    std::unique_ptr<ReactionCounts> reactionCounts(Stride stride, ObsCallBack <ReactionCounts> callback) const override;
 
 private:
     MPIKernel *const kernel;

@@ -55,32 +55,37 @@ class CPUObservableFactory : public readdy::model::observables::ObservableFactor
 public:
     explicit CPUObservableFactory(CPUKernel* kernel);
 
-    std::unique_ptr<model::observables::Energy> energy(Stride stride) const override;
+    std::unique_ptr<model::observables::Energy>
+    energy(Stride stride, ObsCallBack <model::observables::Energy> callback) const override;
 
-    std::unique_ptr<model::observables::Virial> virial(Stride stride) const override;
+    std::unique_ptr<model::observables::Virial>
+    virial(Stride stride, ObsCallBack <model::observables::Virial> callback) const override;
 
     std::unique_ptr<model::observables::HistogramAlongAxis>
     histogramAlongAxis(Stride stride, std::vector<scalar> binBorders, std::vector<std::string> typesToCount,
-                       unsigned int axis) const override;
+                       unsigned int axis, ObsCallBack <model::observables::HistogramAlongAxis> callback) const override;
 
     std::unique_ptr<model::observables::NParticles>
-    nParticles(Stride stride, std::vector<std::string> typesToCount) const override;
+    nParticles(Stride stride, std::vector<std::string> typesToCount,
+               ObsCallBack <model::observables::NParticles> callback) const override;
 
     std::unique_ptr<model::observables::Forces>
-    forces(Stride stride, std::vector<std::string> typesToCount) const override;
+    forces(Stride stride, std::vector<std::string> typesToCount,
+           ObsCallBack <model::observables::Forces> callback) const override;
 
-    std::unique_ptr<model::observables::Positions>
-    positions(Stride stride, std::vector<std::string> typesToCount) const override;
+    std::unique_ptr<Positions>
+    positions(Stride stride, std::vector<std::string> typesToCount, ObsCallBack <Positions> callback) const override;
 
-    std::unique_ptr<model::observables::RadialDistribution>
+    std::unique_ptr<RadialDistribution>
     radialDistribution(Stride stride, std::vector<scalar> binBorders, std::vector<std::string> typeCountFrom,
-                       std::vector<std::string> typeCountTo, scalar particleDensity) const override;
+                       std::vector<std::string> typeCountTo, scalar particleDensity,
+                       ObsCallBack <RadialDistribution> callback) const override;
 
-    std::unique_ptr<model::observables::Particles> particles(Stride stride) const override;
+    std::unique_ptr<Particles> particles(Stride stride, ObsCallBack <Particles> callback) const override;
 
-    std::unique_ptr<model::observables::Reactions> reactions(Stride stride) const override;
+    std::unique_ptr<Reactions> reactions(Stride stride, ObsCallBack <Reactions> callback) const override;
 
-    std::unique_ptr<model::observables::ReactionCounts> reactionCounts(Stride stride) const override;
+    std::unique_ptr<ReactionCounts> reactionCounts(Stride stride, ObsCallBack <ReactionCounts> callback) const override;
 
 private:
     CPUKernel *const kernel;

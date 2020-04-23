@@ -154,10 +154,10 @@ public:
      * @param observable the observable
      * @return a observable handle that allows for post-hoc modification of the observable
      */
-    template<typename T>
-    ObservableHandle registerObservable(std::unique_ptr<T> observable, detail::is_observable_type<T> * = 0) {
-        return registerObservable(std::move(observable), [](const typename T::result_type & /*unused*/) {});
-    }
+    //template<typename T>
+    //ObservableHandle registerObservable(std::unique_ptr<T> observable, detail::is_observable_type<T> * = 0) {
+    //    return registerObservable(std::move(observable), [](const typename T::result_type & /*unused*/) {});
+    //}
 
     /**
      * Registers a predefined observable with the kernel together with a callback.
@@ -167,9 +167,11 @@ public:
      * @param callback the callback
      * @return a observable handle that allows for post-hoc modification of the observable
      */
+     // todo put in Kernel.h?
     template<typename T>
-    ObservableHandle registerObservable(std::unique_ptr<T> observable, const observable_callback<T> &callback,
+    ObservableHandle registerObservable(std::unique_ptr<T> observable,// const observable_callback<T> &callback,
                                         detail::is_observable_type<T> * = 0) {
+        // todo in factory
 //        if (observable->type() == "Reactions") {
 //            _kernel->context().recordReactionsWithPositions() = true;
 //        } else if (observable->type() == "ReactionCounts") {
@@ -179,13 +181,13 @@ public:
 //        } else {
 //            /* no action required */
 //        }
-//
-//        auto connection = _kernel->connectObservable(observable.get());
-//        observable->callback() = callback;
-//        _kernel->registeredObservables().push_back(std::move(observable));
-//        _kernel->observableConnections().push_back(std::move(connection));
-//        return ObservableHandle{_kernel->registeredObservables().back().get()};
-        return _kernel->registerObservable(std::move(observable), callback);
+
+        auto connection = _kernel->connectObservable(observable.get());
+        // todo in factory
+        // observable->callback() = callback;
+        _kernel->registeredObservables().push_back(std::move(observable));
+        _kernel->observableConnections().push_back(std::move(connection));
+        return ObservableHandle{_kernel->registeredObservables().back().get()};
     }
 
     /**

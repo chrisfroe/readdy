@@ -79,6 +79,7 @@ TEST_CASE("Test particles observable", "[mpi]") {
         const auto &positions = std::get<2>(result);
         CHECK(std::count(types.begin(), types.end(), idA) == 10000);
     };
-    auto obsHandle = simulation.registerObservable(simulation.observe().particles(1), check);
+    auto obsHandle = simulation.registerObservable(simulation.observe().particles(1,
+                                                                                  readdy::model::observables::ObservableFactory::ObsCallBack<Particles>()), check);
     simulation.run(3, 0.01);
 }
