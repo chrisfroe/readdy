@@ -80,3 +80,5 @@ TEST_CASE("Test particles observable", "[mpi]") {
     simulation.registerObservable(simulation.observe().particles(1, check));
     simulation.run(3, 0.01);
 }
+
+// todo more tests!

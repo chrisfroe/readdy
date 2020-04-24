@@ -383,14 +383,6 @@ public:
     virtual ~MakeCheckpoint() = default;
     virtual std::string describe() const = 0;
 };
-// fixme remove
-//template<typename Obs>
-//class RegisterObservable {
-//public:
-//    RegisterObservable() {}
-//    virtual ~RegisterObservable() = default;
-//    virtual ObservableHandle perform() = 0;
-//};
 
 template<typename T>
 std::string getActionName(typename std::enable_if<std::is_base_of<AddParticles, T>::value>::type * = 0) {
