@@ -99,6 +99,20 @@ public:
     }
 
     /**
+     * Connect the observable, store the connection and the observable. As long as the connection stays alive,
+     * the observable will be evaluated upon firing the signal. Return a handle to the observable, e.g. used for
+     * saving results to file.
+     * @param observable
+     * @return an observable handle that allows for post-hoc modification of the observable
+     */
+    ObservableHandle registerObservable(std::unique_ptr<readdy::model::observables::ObservableBase> observable) {
+        auto connection = connectObservable(observable.get());
+        registeredObservables().push_back(std::move(observable));
+        observableConnections().push_back(std::move(connection));
+        return ObservableHandle{registeredObservables().back().get()};
+    }
+
+    /**
      * Connects an observable to the kernel signal.
      *
      * @return A connection object that, once deleted, releases the connection of the observable.

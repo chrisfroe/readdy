@@ -68,7 +68,7 @@ public:
     template<typename T>
     using observable_callback = typename std::function<void(typename T::result_type)>;
 
-    /** User provided context is copied, and no modifyable view on it is provided after construction of Simulation */
+    /** User provided context is copied, and no modifiable view on it is provided after construction of Simulation */
     explicit Simulation(plugin::KernelProvider::kernel_ptr kernel, model::Context ctx) : _kernel(std::move(kernel)) {
         _kernel->context() = std::move(ctx);
     }
@@ -148,46 +148,12 @@ public:
     }
 
     /**
-     * Registers a predefined observable with the kernel. A list of available observables can be obtained by
-     * getAvailableObservables().
-     * @tparam observable type
-     * @param observable the observable
-     * @return a observable handle that allows for post-hoc modification of the observable
-     */
-    //template<typename T>
-    //ObservableHandle registerObservable(std::unique_ptr<T> observable, detail::is_observable_type<T> * = 0) {
-    //    return registerObservable(std::move(observable), [](const typename T::result_type & /*unused*/) {});
-    //}
-
-    /**
-     * Registers a predefined observable with the kernel together with a callback.
-     * A list of available observables can be obtained by getAvailableObservables().
-     * @tparam T observable type
+     * Registers a predefined observable with the kernel, which enables evaluation during the simulation.
      * @param observable the observable instance
-     * @param callback the callback
-     * @return a observable handle that allows for post-hoc modification of the observable
+     * @return an observable handle that allows for post-hoc modification of the observable
      */
-     // todo put in Kernel.h?
-    template<typename T>
-    ObservableHandle registerObservable(std::unique_ptr<T> observable,// const observable_callback<T> &callback,
-                                        detail::is_observable_type<T> * = 0) {
-        // todo in factory
-//        if (observable->type() == "Reactions") {
-//            _kernel->context().recordReactionsWithPositions() = true;
-//        } else if (observable->type() == "ReactionCounts") {
-//            _kernel->context().recordReactionCounts() = true;
-//        } else if (observable->type() == "Virial") {
-//            _kernel->context().recordVirial() = true;
-//        } else {
-//            /* no action required */
-//        }
-
-        auto connection = _kernel->connectObservable(observable.get());
-        // todo in factory
-        // observable->callback() = callback;
-        _kernel->registeredObservables().push_back(std::move(observable));
-        _kernel->observableConnections().push_back(std::move(connection));
-        return ObservableHandle{_kernel->registeredObservables().back().get()};
+    ObservableHandle registerObservable(std::unique_ptr<readdy::model::observables::ObservableBase> observable) {
+        _kernel->registerObservable(std::move(observable));
     }
 
     /**
