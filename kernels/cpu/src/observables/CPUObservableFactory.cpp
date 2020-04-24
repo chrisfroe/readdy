@@ -78,41 +78,54 @@ CPUObservableFactory::forces(Stride stride, std::vector<std::string> typesToCoun
     return std::move(obs);
 }
 
-std::unique_ptr<Positions>
+std::unique_ptr<model::observables::Positions>
 CPUObservableFactory::positions(Stride stride, std::vector<std::string> typesToCount,
-                                model::observables::ObservableFactory::ObsCallBack <Positions> callback) const {
-    return {std::make_unique<CPUPositions>(kernel, stride, typesToCount)};
+                                model::observables::ObservableFactory::ObsCallBack <model::observables::Positions> callback) const {
+    auto obs = std::make_unique<CPUPositions>(kernel, stride, typesToCount);
+    obs->setCallback(callback);
+    return std::move(obs);
 }
 
-std::unique_ptr<RadialDistribution>
+std::unique_ptr<model::observables::RadialDistribution>
 CPUObservableFactory::radialDistribution(Stride stride, std::vector<scalar> binBorders,
                                          std::vector<std::string> typeCountFrom,
                                          std::vector<std::string> typeCountTo, scalar particleDensity,
-                                         model::observables::ObservableFactory::ObsCallBack <RadialDistribution> callback) const {
-    return {std::make_unique<model::observables::RadialDistribution>(
+                                         model::observables::ObservableFactory::ObsCallBack <model::observables::RadialDistribution> callback) const {
+    auto obs = std::make_unique<model::observables::RadialDistribution>(
             kernel, stride, binBorders, typeCountFrom, typeCountTo, particleDensity
-    )};
+    );
+    obs->setCallback(callback);
+    return std::move(obs);
 }
 
-std::unique_ptr<Particles> CPUObservableFactory::particles(Stride stride,
-                                                           model::observables::ObservableFactory::ObsCallBack <Particles> callback) const {
-    return {std::make_unique<CPUParticles>(kernel, stride)};
+std::unique_ptr<model::observables::Particles> CPUObservableFactory::particles(Stride stride,
+                                                           model::observables::ObservableFactory::ObsCallBack <model::observables::Particles> callback) const {
+    auto obs = std::make_unique<CPUParticles>(kernel, stride);
+    obs->setCallback(callback);
+    return std::move(obs);
 }
 
-std::unique_ptr<Reactions> CPUObservableFactory::reactions(Stride stride,
-                                                           model::observables::ObservableFactory::ObsCallBack <Reactions> callback) const {
-    return {std::make_unique<CPUReactions>(kernel, stride)};
+std::unique_ptr<model::observables::Reactions>
+CPUObservableFactory::reactions(Stride stride, ObsCallBack <model::observables::Reactions> callback) const {
+    auto obs = std::make_unique<CPUReactions>(kernel, stride);
+    obs->setCallback(callback);
+    kernel->context().recordReactionsWithPositions() = true;
+    return std::move(obs);
 }
 
-std::unique_ptr<ReactionCounts> CPUObservableFactory::reactionCounts(Stride stride,
-                                                                     model::observables::ObservableFactory::ObsCallBack <ReactionCounts> callback) const {
-    return {std::make_unique<CPUReactionCounts>(kernel, stride)};
+std::unique_ptr<model::observables::ReactionCounts>
+CPUObservableFactory::reactionCounts(Stride stride, ObsCallBack <model::observables::ReactionCounts> callback) const {
+    auto obs = std::make_unique<CPUReactionCounts>(kernel, stride);
+    obs->setCallback(callback);
+    kernel->context().recordReactionCounts() = true;
+    return std::move(obs);
 }
 
 std::unique_ptr<model::observables::Virial>
 CPUObservableFactory::virial(Stride stride, ObsCallBack <model::observables::Virial> callback) const {
     auto obs = std::make_unique<CPUVirial>(kernel, stride);
     obs->setCallback(callback);
+    kernel->context().recordVirial() = true;
     return std::move(obs);
 }
 

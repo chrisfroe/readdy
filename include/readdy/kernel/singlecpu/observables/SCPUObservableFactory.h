@@ -51,40 +51,40 @@ class SCPUObservableFactory : public readdy::model::observables::ObservableFacto
 public:
     explicit SCPUObservableFactory(readdy::kernel::scpu::SCPUKernel* kernel);
 
-    std::unique_ptr<readdy::model::observables::Energy>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Energy>
     energy(Stride stride, ObsCallBack<readdy::model::observables::Energy> callBack) const override;
 
-    std::unique_ptr<readdy::model::observables::Virial>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Virial>
     virial(Stride stride, ObsCallBack<readdy::model::observables::Virial> callBack) const override;
 
-    std::unique_ptr<readdy::model::observables::HistogramAlongAxis>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::HistogramAlongAxis>
     histogramAlongAxis(Stride stride, std::vector<scalar> binBorders, std::vector<std::string> typesToCount,
                        unsigned int axis, ObsCallBack<readdy::model::observables::HistogramAlongAxis> callBack) const override;
 
-    std::unique_ptr<readdy::model::observables::NParticles>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::NParticles>
     nParticles(Stride stride, std::vector<std::string> typesToCount,
                ObsCallBack<readdy::model::observables::NParticles> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Forces>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Forces>
     forces(Stride stride, std::vector<std::string> typesToCount,
            ObsCallBack<readdy::model::observables::Forces> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Positions>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Positions>
     positions(Stride stride, std::vector<std::string> typesToCount,
               ObsCallBack<readdy::model::observables::Positions> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::RadialDistribution>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::RadialDistribution>
     radialDistribution(Stride stride, std::vector<scalar> binBorders, std::vector<std::string> typeCountFrom,
                        std::vector<std::string> typeCountTo, scalar particleDensity,
                        ObsCallBack<readdy::model::observables::RadialDistribution> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Particles>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Particles>
     particles(Stride stride, ObsCallBack<readdy::model::observables::Particles> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::Reactions>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::Reactions>
     reactions(Stride stride, ObsCallBack<readdy::model::observables::Reactions> callback) const override;
 
-    std::unique_ptr<readdy::model::observables::ReactionCounts>
+    [[nodiscard]] std::unique_ptr<readdy::model::observables::ReactionCounts>
     reactionCounts(Stride stride, ObsCallBack<readdy::model::observables::ReactionCounts> callback) const override;
 private:
     readdy::kernel::scpu::SCPUKernel *const kernel;

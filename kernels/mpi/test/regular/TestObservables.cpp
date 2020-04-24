@@ -34,10 +34,8 @@
 
 
 /**
- * << detailed description >>
- *
  * @file TestObservables.cpp
- * @brief << brief description >>
+ * @brief Test observables for the MPI kernel
  * @author chrisfroe
  * @date 22.04.20
  */
@@ -73,13 +71,12 @@ TEST_CASE("Test particles observable", "[mpi]") {
         simulation.addParticle("A", x, y, z);
     }
     const auto idA = ctx.particleTypes().idOf("A");
-    auto check = [&nParticles, &idA](readdy::model::observables::Particles::result_type result) {
+    auto check = [&nParticles, &idA](const readdy::model::observables::Particles::result_type &result) {
         const auto &types = std::get<0>(result);
         const auto &ids = std::get<1>(result);
         const auto &positions = std::get<2>(result);
-        CHECK(std::count(types.begin(), types.end(), idA) == 10000);
+        CHECK(std::count(types.begin(), types.end(), idA) == 10);
     };
-    auto obsHandle = simulation.registerObservable(simulation.observe().particles(1,
-                                                                                  readdy::model::observables::ObservableFactory::ObsCallBack<Particles>()), check);
+    simulation.registerObservable(simulation.observe().particles(1, check));
     simulation.run(3, 0.01);
 }

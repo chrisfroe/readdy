@@ -82,10 +82,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIPositions : public readdy::model::observables::Positions {
@@ -97,10 +96,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIParticles : public readdy::model::observables::Particles {
@@ -147,10 +145,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    //todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIForces : public readdy::model::observables::Forces {
@@ -165,10 +162,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIReactions : public readdy::model::observables::Reactions {
@@ -180,10 +176,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 class MPIReactionCounts : public readdy::model::observables::ReactionCounts {
@@ -195,10 +190,9 @@ public:
 protected:
     MPIKernel *kernel;
 
-    // todo
-    //void append() override;
+    void append() override;
 
-    //void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
+    void initializeDataSet(File &file, const std::string &dataSetName, Stride flushStride) override;
 };
 
 }

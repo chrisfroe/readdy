@@ -33,8 +33,6 @@
  ********************************************************************/
 
 /**
- * << detailed description >>
- *
  * @file SCPUObservableFactory.cpp
  * @brief Implementation of observable factory of the single cpu kernel
  * @author clonker
@@ -43,7 +41,6 @@
 
 
 #include <readdy/kernel/singlecpu/SCPUKernel.h>
-
 #include <readdy/kernel/singlecpu/observables/SCPUObservableFactory.h>
 #include <readdy/kernel/singlecpu/observables/SCPUObservables.h>
 
@@ -71,7 +68,7 @@ SCPUObservableFactory::nParticles(Stride stride, std::vector<std::string> typesT
 
 std::unique_ptr<readdy::model::observables::Forces>
 SCPUObservableFactory::forces(Stride stride, std::vector<std::string> typesToCount,
-                              ObsCallBack <readdy::model::observables::Forces> callback) const {
+                              ObsCallBack<readdy::model::observables::Forces> callback) const {
     auto obs = std::make_unique<SCPUForces>(kernel, stride, typesToCount);
     obs->setCallback(callback);
     return std::move(obs);
@@ -79,7 +76,7 @@ SCPUObservableFactory::forces(Stride stride, std::vector<std::string> typesToCou
 
 std::unique_ptr<readdy::model::observables::Positions>
 SCPUObservableFactory::positions(Stride stride, std::vector<std::string> typesToCount,
-                                 std::function<void(std::vector<Vec3>)> callback) const {
+                                 ObsCallBack<readdy::model::observables::Positions> callback) const {
     auto obs = std::make_unique<SCPUPositions>(kernel, stride, typesToCount);
     obs->setCallback(callback);
     return std::move(obs);
