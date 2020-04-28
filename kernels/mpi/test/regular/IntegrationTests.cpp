@@ -42,11 +42,27 @@
  */
 
 #include <catch2/catch.hpp>
-
 #include <readdy/model/Kernel.h>
 #include <readdy/plugin/KernelProvider.h>
 #include <readdy/kernel/mpi/MPIKernel.h>
 
-TEST_CASE("Integration test", "[!hide][mpi]") {
-    // there is nothing here
+
+// todo equality operator
+struct Results {
+    readdy::model::observables::Virial::result_type virial;
+    readdy::model::observables::Energy::result_type energy;
+    readdy::model::observables::Positions::result_type positions;
+    readdy::model::observables::Forces::result_type forces;
+    readdy::model::observables::Particles::result_type particles;
+    readdy::model::observables::NParticles::result_type nParticles;
+    readdy::model::observables::
+};
+
+
+Results observeState(const std::vector<readdy::Vec3>& positions, const std::string& kernelName) {
+    // todo
+}
+
+TEST_CASE("Integration test force observables compared to SCPU", "[mpi]") {
+    // todo
 }
