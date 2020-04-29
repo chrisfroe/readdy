@@ -167,7 +167,10 @@ void MPIHistogramAlongAxis::evaluate() {
         }
     }
     // todo variable float type
-    MPI_Reduce(result.data(), result.data(), static_cast<int>(result.size()), MPI_DOUBLE, MPI_SUM, 0, kernel->commUsedRanks());
+    HistogramAlongAxis::result_type tmp;
+    tmp.resize(result.size());
+    MPI_Reduce(result.data(), tmp.data(), static_cast<int>(result.size()), MPI_DOUBLE, MPI_SUM, 0, kernel->commUsedRanks());
+    result = tmp;
 }
 
 void MPIHistogramAlongAxis::append() {
@@ -219,7 +222,10 @@ void MPINParticles::evaluate() {
         throw std::runtime_error("impossible");
     }
 
-    MPI_Reduce(result.data(), result.data(), static_cast<int>(result.size()), MPI_UNSIGNED_LONG, MPI_SUM, 0, kernel->commUsedRanks());
+    NParticles::result_type tmp;
+    tmp.resize(result.size());
+    MPI_Reduce(result.data(), tmp.data(), static_cast<int>(result.size()), MPI_UNSIGNED_LONG, MPI_SUM, 0, kernel->commUsedRanks());
+    result = tmp;
 }
 
 void MPINParticles::append() {
@@ -350,7 +356,9 @@ void MPIEnergy::evaluate() {
     if (kernel->domain().isWorkerRank()) {
         result = kernel->stateModel().energy();
     }
-    MPI_Reduce(&result, &result, static_cast<int>(1), MPI_DOUBLE, MPI_SUM, 0, kernel->commUsedRanks());
+    readdy::scalar tmp;
+    MPI_Reduce(&result, &tmp, static_cast<int>(1), MPI_DOUBLE, MPI_SUM, 0, kernel->commUsedRanks());
+    result = tmp;
 }
 
 void MPIEnergy::append() {
