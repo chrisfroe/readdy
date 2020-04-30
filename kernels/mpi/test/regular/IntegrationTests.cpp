@@ -33,8 +33,6 @@
  ********************************************************************/
 
 /**
- *
- *
  * @file TestIntegration.cpp
  * @brief « brief description »
  * @author chrisfroe
@@ -52,6 +50,9 @@ namespace rmo = readdy::model::observables;
 namespace rkmu = readdy::kernel::mpi::util;
 
 using ParticlePODSet = std::unordered_set<rkmu::ParticlePOD, rkmu::HashPOD>;
+struct CompareVec3 {
+    bool operator() (const readdy::Vec3 &v1, const readdy::Vec3 &v2) const {return v1.x <  v2.x; }
+};
 
 /// Static in contrast to dynamic (and thus stochastic) results like reaction counts,
 /// i.e. StaticResults only depends on the current particle configuration
@@ -66,7 +67,6 @@ struct StaticResults {
     rmo::HistogramAlongAxis::result_type histogramAlongAxis;
 
     bool operator==(const StaticResults &other) const {
-        Approx val{1.0};
         // virial, approx the same since order of computation might differ -> rounding errors
         {
             const auto &v1 = virial.data();
@@ -120,20 +120,28 @@ struct StaticResults {
             }
         }
 
-        // forces, ignore order, abuse the ParticlePODSet with a fixed type
+        // forces, sort by x, then must be approximately same
         {
-            ParticlePODSet set1;
+            std::vector<readdy::Vec3> f1;
             for (const auto &f : forces) {
-                set1.emplace(f, 0);
+                f1.push_back(f);
             }
+            std::sort(f1.begin(), f1.end(), CompareVec3{});
 
-            ParticlePODSet set2;
+            std::vector<readdy::Vec3> f2;
             for (const auto &f : other.forces) {
-                set2.emplace(f, 0);
+                f2.push_back(f);
             }
+            std::sort(f2.begin(), f2.end(), CompareVec3{});
 
-            if (set1 != set2) {
-                return false;
+            for (std::size_t i=0; i < f1.size(); ++i) {
+                const auto &v1 = f1[i];
+                const auto &v2 = f2[i];
+                for (std::size_t j = 0; j<3; ++j) {
+                    if (not (v1[j] == Approx(v2[j]))) {
+                        return false;
+                    }
+                }
             }
         }
 
@@ -193,21 +201,13 @@ StaticResults observeState(const std::vector<readdy::model::Particle> &initParti
     kernel->actions().updateNeighborList()->perform();
     kernel->actions().calculateForces()->perform();
 
-    readdy::log::critical("-- 1");
     virial->call(0);
-    readdy::log::critical("-- 2");
     energy->call(0);
-    readdy::log::critical("-- 3");
     positions->call(0);
-    readdy::log::critical("-- 4");
     forces->call(0);
-    readdy::log::critical("-- 5");
     particles->call(0);
-    readdy::log::critical("-- 6");
     nParticles->call(0);
-    readdy::log::critical("-- 7");
     histogramAlongAxis->call(0);
-    readdy::log::critical("-- 8");
 
     return {
             .virial = virial->getResult(),
@@ -243,7 +243,6 @@ TEST_CASE("Integration test state observables compared to SCPU", "[mpi]") {
 
     if (not mpiKernel.domain().isIdleRank()) {
         StaticResults mpiResults = observeState(initParticles, &mpiKernel);
-        MPI_Barrier(mpiKernel.commUsedRanks());
         if (mpiKernel.domain().isMasterRank()) {
             readdy::kernel::scpu::SCPUKernel scpuKernel;
             scpuKernel.context() = ctx;

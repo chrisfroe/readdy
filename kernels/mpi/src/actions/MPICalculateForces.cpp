@@ -102,7 +102,7 @@ void MPICalculateForces::performImpl() {
 
             scalar energyUpdate{0.};
             for (const auto &potential : itPot->second) {
-                potential->calculateForceAndEnergy(forceVec, stateModel.energy(), x_ij);
+                potential->calculateForceAndEnergy(forceVec, energyUpdate, x_ij);
             }
             entry.force += forceVec;
             neighborEntry.force -= forceVec;
@@ -116,7 +116,6 @@ void MPICalculateForces::performImpl() {
             } else {
                 throw std::runtime_error("impossible");
             }
-
 
             if constexpr(COMPUTE_VIRIAL) {
                 Matrix33 virialUpdate{{{0, 0, 0, 0, 0, 0, 0, 0, 0}}};

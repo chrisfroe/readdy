@@ -84,14 +84,17 @@ MPIPositions::MPIPositions(MPIKernel *kernel, unsigned int stride, const std::ve
 void MPIPositions::evaluate() {
     result.clear();
     if (kernel->domain().isWorkerRank()) {
-        auto &stateModel = kernel->getMPIKernelStateModel();
+        const auto &data = kernel->getMPIKernelStateModel().getParticleData();
         if (typesToCount.empty()) {
-            result = stateModel.getParticlePositions();
+            for (const auto &p : *data) {
+                if (!p.deactivated and p.responsible) {
+                    result.push_back(p.pos);
+                }
+            }
         } else {
             // only get positions of typesToCount
-            const auto &pd = stateModel.getParticleData();
-            for (const auto &p : *pd) {
-                if (!p.deactivated) {
+            for (const auto &p : *data) {
+                if (!p.deactivated and p.responsible) {
                     if (std::find(typesToCount.begin(), typesToCount.end(), p.type) != typesToCount.end()) {
                         result.push_back(p.pos);
                     }
@@ -248,16 +251,16 @@ void MPIForces::evaluate() {
     if (kernel->domain().isWorkerRank()) {
         const auto &pd = kernel->getMPIKernelStateModel().getParticleData();
         if (typesToCount.empty()) {
-            // get all particles' forces
+            // get all responsible particles' forces
             for (const auto &p : *pd) {
-                if (!p.deactivated) {
+                if (!p.deactivated and p.responsible) {
                     result.push_back(p.force);
                 }
             }
         } else {
             // only get forces of typesToCount
             for (const auto &p : *pd) {
-                if (!p.deactivated) {
+                if (!p.deactivated and p.responsible) {
                     if (std::find(typesToCount.begin(), typesToCount.end(), p.type) != typesToCount.end()) {
                         result.push_back(p.force);
                     }
